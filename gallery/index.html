@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
+    <link rel="stylesheet" href="css/styles.css">
+	<title>Abby's Gallery</title>
+</head>
+<body>
+	<!-- NavBar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="index.html">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="../resume/index.html">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid portfolio-page py-4">
+
+  <!-- title & tags -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Gallery</h2>
+  </div>
+
+  <!-- category tag  -->
+  <div class="portfolio-tags mb-4">
+    <button class="btn btn-sm tag-btn active" data-filter="all">all</button>
+    <button class="btn btn-sm tag-btn" data-filter="graphic design">Graphic Design</button>
+    <button class="btn btn-sm tag-btn" data-filter="game and space">Game & Space</button>
+    <button class="btn btn-sm tag-btn" data-filter="uiux">UI / UX</button>
+    <button class="btn btn-sm tag-btn" data-filter="others">Others</button>
+  </div>
+
+  <!-- project cards -->
+  <div class="masonry-container">
+
+    <!-- project card info -->
+    <div class="masonry-item reveal-row">
+    	<a href="henc/index.html">
+    	<article class="project-card" data-category="graphic design">
+        <div class="project-thumb">
+          <img src="../img/henc/FreeWindowStickerMockup_HENC.jpg" alt="Henc brand identity">
+        </div>
+        <div class="projectMeta">
+        	<div class="project-title">Henc</div>
+        	<p class="project-desc">
+            Brand Identity
+        	</p>
+    	</div>
+    </article>
+  	</a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="code-escape/index.html">
+      <article class="project-card" data-category="game and space">
+        <div class="project-thumb">
+          <img src="../img/codeEscape/thumbnail.png" alt="Code: Escape">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Code: Escape</div>
+        <p class="project-desc">
+            A survival horror FPS game inside a futuristic hospital.
+        </p>
+    	</div>
+      </article>
+    </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="ssense/index.html">
+      <article class="project-card" data-category="uiux">
+        <div class="project-thumb">
+          <img src="../img/SSENSE/thumbnail.png" alt="SSENSE IA redesign">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">SSENSE IA Redesign</div>
+        <p class="project-desc">
+            Information architecture and onboarding redesign using card sorting and tree testing.
+          </p>
+      </div>
+      </article>
+    </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="the-swallow/index.html">
+      <article class="project-card" data-category="game and space">
+        <div class="project-thumb">
+          <img src="../img/theSwallow/swallowThumbnail.jpg" alt="The Swallow">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">The Swallow</div>
+        <p class="project-desc">
+            Immersive environment design
+        </p>
+    </div>
+      </article>
+    </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="flare/index.html">
+      <article class="project-card" data-category="uiux">
+        <div class="project-thumb">
+          <img src="../img/flare/thumbnail.jpg" alt="flare">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Flare</div>
+        <p class="project-desc">
+            Art commission Application UI design. 
+        </p>
+        </div>
+      </article>
+      </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="graphic design">
+        <div class="project-thumb">
+          <img src="../img/gallery/singing.gif" alt="Singing Me">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Singing Me <em>(Available Soon!)</em></div>
+        <p class="project-desc">
+            A clean, vibrant visualization of the songs that shaped my life and the emotions they carry.
+        </p>
+    </div>
+      </article>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="the-cursed-gallery/index.html">
+      <article class="project-card" data-category="game and space">
+        <div class="project-thumb">
+          <img src="../img/gallery/cursedGallery.png" alt="The Cursed Gallery">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">The Cursed Gallery</div>
+        <p class="project-desc">
+             A role-playing puzzle adventure game where the player acts as a gallery staff who is accidentally trapped inside a painting after the museum closes at night. 
+        </p>
+    </div>
+      </article>
+    </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="2024-portfolio/index.html">
+      <article class="project-card" data-category="uiux">
+        <div class="project-thumb">
+          <img src="../img/gallery/portfolioWeb.jpg" alt="24PortfolioPrototype">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">2024 Portfolio Website Prototype</div>
+        <p class="project-desc">
+            A past prototype of my portfolio website
+        </p>
+    </div>
+      </article>
+    </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="weaving-dreams/index.html">
+      <article class="project-card" data-category="others">
+        <div class="project-thumb">
+          <img src="../img/gallery/weavingDreams.png" alt="Weaving Dreams">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Weaving Dreams</div>
+        <p class="project-desc">
+            A narrative series of illustration to show a girl's confrontation with her inner fear in her dreams.
+        </p>
+    </div>
+      </article>
+    </a>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="others">
+        <div class="project-thumb">
+          <img src="../img/gallery/HAN_ABIGAIL_SELFPORTRAIT_01 1.png" alt="Weaving Dreams">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Self Portrait</div>
+        <p class="project-desc">
+            The artwork reflects my feelings of confusion about the present, as if I am caught between clarity and ambiguity.
+        </p>
+    </div>
+      </article>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="others">
+        <div class="project-thumb">
+          <img src="../img/gallery/sheep.png" alt="Sheep">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Sheep</div>
+        <p class="project-desc">
+            A sketch of a sheep girl and her home. I drew this because I like sheep and mushroom. 
+        </p>
+    </div>
+      </article>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="graphic design">
+        <div class="project-thumb">
+          <img src="../img/gallery/236Project2_HanAbigail 1.png" alt="movie poster design">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Movie Poster Design</div>
+        <p class="project-desc">
+            Poster design for a made-up movie.  
+        </p>
+    </div>
+      </article>
+    </div>
+
+    <div class="masonry-item reveal-row">
+      <a href="https://minato5424.github.io/miku39.github.io/">
+      <article class="project-card" data-category="others">
+        <div class="project-thumb">
+          <img src="../img/gallery/miku-fan-page.png" alt="miku fan page">
+        </div>
+        <div class="projectMeta">
+        <div class="project-title">Miku Fan Page</div>
+        <p class="project-desc">
+            A fan page for Hatsune Miku. There are some illustrations and songs that I like.   
+        </p>
+    </div>
+      </article>
+    </a>
+    </div>
+
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>

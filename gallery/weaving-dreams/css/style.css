@@ -1,0 +1,128 @@
+
+
+/* ===== Project Detail Page ===== */
+
+.project-detail-page {
+  min-height: 100vh;
+}
+
+/* left panel */
+.detail-left {
+  /*padding: 2.5rem 3rem 3rem 3rem;*/
+  /*background-color: #4c423e;*/
+}
+
+/* right panel */
+.detail-right {
+  display: static;
+  padding: 2.5rem 3rem 3rem 2.5rem;
+  background-color: #faf9f9;
+}
+
+.detail-panel {
+  position: sticky;
+  top: 100px;
+}
+
+.detail-title {
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.detail-subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.detail-meta {
+  border-top: 1px solid #ddd;
+  padding-top: 0.75rem;
+}
+
+.detail-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.detail-meta-label {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.detail-meta-value {
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.detail-body p {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+  color: #444;
+}
+
+/* left layout*/
+.hero h3{
+  margin: 1.3rem 0;
+  color: #71685f;
+}
+
+.process-section {
+  width: 100%;
+  margin: 5rem 0;
+}
+
+.process-section img{
+  width: 100%;
+}
+
+.process-heading {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.process-body {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #444;
+}
+
+.caption {
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.picGallery{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.picGallery img{
+  width: 100%;
+  height: auto;
+  max-height: 1000px;
+  object-fit: contain;
+}
+
+
+@media (max-width: 991.98px) {
+  .detail-left,
+  .detail-right {
+    padding: 1.5rem 1.5rem 2rem 1.5rem;
+  }
+
+  .detail-panel {
+    position: static;
+  }
+
+  .detail-title {
+    font-size: 2.3rem;
+  }
+}

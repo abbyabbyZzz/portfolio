@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
+    <link rel="stylesheet" href="css/style.css">
+	<title>Welcome to My World | Home</title>
+</head>
+
+<body>
+<!-- NavBar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="gallery/index.html">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="resume/index.html">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid page-wrapper">
+  <div class="row">
+
+    <!-- Left Sidebar -->
+    <aside class="col-md-4 col-lg-4 sidebar-left reveal-block">
+      <div class="sidebar-inner">
+      	<div class="avatar-wrapper">
+      <img
+        id="avatarImage"
+        class="avatar-image"
+        src="img/logo1.png"
+        alt="Abigail avatar"
+      >
+      <div id="cursor-tooltip">click me ✦</div>
+    </div>
+
+        <div>
+          <h1 class="mb-3 heroName">Hi, I'm Abby!</h1>
+          <p class="mb-4">
+            I'm a third year CCIT &amp; TCS student at the University of Toronto Mississauga, working across UX, 
+            information architecture, and game / interactive media.
+          </p>
+
+          <div class="sidebar-links mb-4">
+            <p><strong>Contacts</strong></p>
+            <p><a href="mailto:abigail.han@mail.utoronto.ca">abigail.han@mail.utoronto.ca</a></p>
+            <p><a href="https://www.linkedin.com/in/abigail-han-a16477336/" target="_blank">LinkedIn ↗</a></p>
+            <p><a href="https://www.behance.net/minatozzz" target="_blank">Behance ↗</a></p>
+            <p><a href="resume/index.html">My Resume</a></p>
+          </div>
+
+          <div>
+            <p class="mb-1"><strong>Work</strong></p>
+            <ul class="work-list ps-3 mb-0">
+              <li><a href="gallery/henc/index.html">Henc</a></li>
+              <li><a href="gallery/code-escape/index.html">Code: Escape</a></li>
+              <li><a href="gallery/ssense/index.html">SSENSE Redesign</a></li>
+              <li><a href="gallery/the-swallow/index.html">The Swallow</a></li>
+              <li><a href="gallery/index.html">View All Works ↗</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="site-footer mt-4">©2025 Abigail Han</div>
+      </div>
+    </aside>
+
+    <!-- 🔹 Right Scroll Section -->
+    <main class="col-md-8 col-lg-8 main-right">
+
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <div class="project-section-title">Selected Projects</div>
+        <div class="small text-muted" id="clock"></div>
+      </div>
+
+
+      <!-- ==== PROJECT 1 ==== -->
+      <section class="project-block reveal-block" id="project-henc">
+
+        <div id="projectCarousel1" class="carousel slide project-carousel mb-3">
+          <div class="carousel-inner">
+            <div class="carousel-item active"><div class="carousel-frame"><img src="img/henc/FreeWindowStickerMockup_HENC.jpg"></div></div>
+            <div class="carousel-item"><div class="carousel-frame"><img src="img/henc/Business_Card_HENC.jpg"></div></div>
+            <div class="carousel-item"><div class="carousel-frame"><img src="img/henc/BoxMockup_HENC.jpg"></div></div>
+          </div>
+        </div>
+
+        <div class="row project-info">
+          <div class="col-md-4">
+            <div class="project-meta-label">Project</div>
+            <div class="project-name">Henc</div>
+          </div>
+
+          <div class="col-md-8 project-caption">
+            <p class="pc-title">A brand of creativity, craftsmanship, and community. </p>
+            <p class="pc-subtitle">Brand Identity</p>
+
+            <p class="pc-meta">
+              Role: Lead Designer<br>
+              Tools: Illustrator, Indesign, Photoshop
+            </p>
+
+            <p class="pc-desc">
+              A brand identity project for a ceramic brand - Henc. Rooted in the values of community and making, Henc aims to be a warm and motivating brand that encourages self-expression as well as connection through creation.
+            </p>
+
+            <p class="pc-view"><a href="gallery/henc/index.html">[View Detail]</a></p>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==== PROJECT 2 ==== -->
+      <section class="project-block reveal-block" id="project-fps">
+        <div id="projectCarousel2" class="carousel slide project-carousel mb-3">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+        <div class="carousel-frame">
+          <video class="project-video"
+                 src="img/codeEscape/codeEscapeVid.mp4"
+                 controls
+                 muted
+                 autoplay
+                 loop
+                 playsinline>
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+        </div>
+
+        <div class="row project-info">
+          <div class="col-md-4">
+            <div class="project-meta-label">Project</div>
+            <div class="project-name">Code: Escape</div>
+          </div>
+
+          <div class="col-md-8 project-caption">
+            <p class="pc-title">Leave behind the past. Now the robots rule, all that matters is to escape. </p>
+            <p class="pc-subtitle">First-Person Shooting Game</p>
+
+            <p class="pc-meta">
+              Role: Concept Art Lead, Environmental Designer<br>
+              Tools: Unity
+            </p>
+
+            <p class="pc-desc">
+              A survival horror game that combines linear exploration, puzzle-solving, and FPS combat inside a futuristic hospital. You wake in a facility where machines have gained self-awareness and human bodies are reshaped by corporate experiments. 
+            </p>
+
+            <p class="pc-view"><a href="gallery/code-escape/index.html">[View Detail]</a></p>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==== PROJECT 3 (Still in Progress) ==== -->
+      <!-- <section class="project-block" id="project-chef">
+        <div id="projectCarousel3" class="carousel slide project-carousel mb-3">
+          <div class="carousel-inner">
+            <div class="carousel-item active"><div class="carousel-frame"><img src="media/ssense-1.jpg"></div></div>
+          </div>
+        </div>
+
+        <div class="row project-info">
+          <div class="col-md-4">
+            <div class="project-meta-label">Project</div>
+            <div class="project-name">Chef Next Door</div>
+          </div>
+
+          <div class="col-md-8 project-caption">
+            <p class="pc-title">111</p>
+            <p class="pc-subtitle">Brand Identity</p>
+
+            <p class="pc-meta">
+              Role: Visual Design Lead<br>
+              Tools: Illustrator, Procreate, Photoshop
+            </p>
+
+            <p class="pc-desc">
+              1111111
+            </p>
+
+            <p class="pc-view"><a href="#">[View Detail]</a></p>
+          </div>
+        </div>
+      </section> -->
+
+      <!-- ==== PROJECT 4 ==== -->
+      <section class="project-block reveal-block" id="project-ssense">
+
+        <div id="projectCarousel1" class="carousel slide project-carousel mb-3">
+          <div class="carousel-inner">
+            <div class="carousel-item active"><div class="carousel-frame"><img src="img/SSENSE/IAandPrototype.jpg"></div></div>
+            <div class="carousel-item"><div class="carousel-frame"><img src="img/SSENSE/cardSort.jpg"></div></div>
+          </div>
+        </div>
+
+        <div class="row project-info">
+          <div class="col-md-4">
+            <div class="project-meta-label">Project</div>
+            <div class="project-name">SSENSE Website Redesign</div>
+          </div>
+
+          <div class="col-md-8 project-caption">
+            <p class="pc-title">A structural overhaul of SSENSE’s womenswear Information Architecture. </p>
+            <p class="pc-subtitle">Research and Analysis</p>
+
+            <p class="pc-meta">
+              Role: UX Researcher, UX designer<br>
+              Tools: Figma
+            </p>
+
+            <p class="pc-desc">
+              A comprehensive redesign of SSENSE’s womenswear information architecture to improve navigation clarity, browsing efficiency, and overall user experience.
+            </p>
+
+            <p class="pc-view"><a href="gallery/ssense/index.html">[View Detail]</a></p>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ==== PROJECT 5 ==== -->
+      <section class="project-block reveal-block" id="project-swallow">
+  <div id="projectCarousel4" class="carousel slide project-carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <div class="carousel-frame">
+          <video class="project-video"
+                 src="img/theSwallow/TheSwallowVid.mp4"
+                 controls
+                 muted
+                 autoplay
+                 loop
+                 playsinline>
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+
+        <div class="row project-info">
+          <div class="col-md-4">
+            <div class="project-meta-label">Project</div>
+            <div class="project-name">The Swallow</div>
+          </div>
+
+          <div class="col-md-8 project-caption">
+            <p class="pc-title">A school that felt both familiar and strange. </p>
+            <p class="pc-subtitle">Immersive Environment Design</p>
+
+            <p class="pc-meta">
+              Role: Concept Art Lead, Environment Designer<br>
+              Tools: Autodesk Maya, Unity
+            </p>
+
+            <p class="pc-desc">
+              An immersive environment where the setting is at a high school in 1980s China that represents the main character’s inner world. The structures inside the school are constructed according to her impression of the world. The school emphasizes and tilts her fear. The player can use a camera that is accidentally activated as a connection of the reality and the world. It can reflect things hidden within this world. The user can use the camera as a hint in discovering the world. 
+            </p>
+
+            <p class="pc-view"><a href="gallery/the-swallow/index.html">[View Detail]</a></p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+  crossorigin="anonymous">
+</script>
+<script>
+
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
+</script>
+
+<script src="js/script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+/* ===== Resume Page ===== */
+
+.resume-page {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/* 左侧 Bio 栏 */
+.sidebar-left {
+  display: flex;
+  justify-content: center;   /* 水平居中（如果你以后想左对齐可以改成 flex-start） */
+  align-items: center;       /* 垂直居中 —— 关键！ */
+  min-height: 100vh;         /* 占满整个屏幕高度 */
+}
+
+.resume-sidebar-inner {
+  text-align: center;
+}
+
+/* Bio 标签 */
+.resume-bio-label {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Back 按钮 */
+.resume-back {
+  font-size: 0.85rem;
+  color: #777;
+  text-decoration: none;
+}
+
+.resume-back:hover {
+  text-decoration: underline;
+}
+
+/* 左下角 Footer */
+.site-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 0.75rem;
+  color: #aaa;
+}
+
+/* 右侧整体宽度控制 */
+.resume-wrapper {
+  max-width: 900px;
+  padding-top: 3rem;
+}
+
+/* 顶部 intro 段落 */
+.resume-intro {
+  font-size: 0.9rem;
+  max-width: 640px;
+  margin-bottom: 2.5rem;
+}
+
+/* 左 label / 右内容 结构 */
+.resume-list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  row-gap: 1.7rem;
+}
+
+.resume-item {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  column-gap: 3rem;
+}
+
+.resume-term {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.resume-detail {
+  font-size: 0.85rem;
+}
+
+.resume-detail p {
+  margin-bottom: 0.6rem;
+}
+
+/* 手机布局 */
+@media (max-width: 768px) {
+
+  .sidebar-left {
+    min-height: auto;
+    padding: 2rem 1rem;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .resume-wrapper {
+    padding-top: 1rem;
+  }
+
+  .resume-item {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    position: static;
+    margin-top: 2rem;
+  }
+}

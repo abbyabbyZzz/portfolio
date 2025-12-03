@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SSENSE - Project Detail</title>
+	<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+		<!-- NavBar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="../../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="../../resume/index.html">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Project Detail Layout ===== -->
+  <main class="container-fluid project-detail-page">
+    <div class="row">
+
+      <!-- left panel -->
+      <div class="col-lg-8 detail-left">
+
+        <!-- hero: figma prototype -->
+        <section class="hero mb-5">
+          <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="100%" height="900px" src="https://embed.figma.com/proto/JIbTi4vbJOve9K0mooCsEH/CCT380-SSENSE?node-id=2018-21&starting-point-node-id=1%3A27&embed-host=share" allowfullscreen></iframe>
+          <p class="caption small text-muted">
+            final prototype
+          </p>
+        </section>
+
+        <!-- process -->
+        <section class="process-section mb-5">
+          <div class="picGallery">
+            <img src="../../img/SSENSE/thumbnail.png" class="img-fluid my-3" alt="SSENSE homepage">
+          </div>
+          <h3 class="process-heading">Context</h3>
+          <p class="process-body">
+            SSENSE is a Montreal-based luxury e-commerce platform known for its minimalist aesthetic, curated designer selection, and editorial-driven shopping experience. SSENSE’s platform targets fashion-forward users aged 18–40 who expect a seamless, efficient shopping experience for high-end and emerging designer brands. The site’s IA demonstrates a top-down and bottom-up approaches to organization systems: at the top level, users choose among broad categories like Women’s, Men’s, Kidswear, and Editorial in the global navigation, while each category page relies on a bottom-up faceted navigation panel driven by product metadata like designer, price, size, and color to filter thousands of items. The labeling system of SSENSE is concise, usually kept to a maximum of three words with no abbreviations to avoid jargon. 
+          </p>
+          <p class="process-body">
+            Through interviews, observation-based user testing, and a review of the platform's UI components, we identified how SSENSE’s current system shapes user behaviour. New and returning shoppers alike expressed appreciation for the clean aesthetic and high-quality imagery, yet struggled with the overwhelming faceted filter panel, inconsistent visibility of key filters, and limited search functionality. These insights, combined with our analysis of SSENSE’s organizational structure, content types, and browsing pathways, established a clear foundation for understanding the design environment we were working within. Our final deliverables for this stage included a report analyzing the intended user and the current IA, a second report documenting user-testing insights with the proposed IA, and a medium-fidelity prototype illustrating our redesigned navigation.
+          </p>
+          <h3 class="process-heading">project goal</h3>
+          <p class="process-body">
+            The goal of our project is to improve the user experience on SSENSE’s Womenswear section by refining its IA and HCI design while keeping the site’s unique, minimalist branding identity. Specifically, we want to simplify the faceted filter panel, establish a clearer visual hierarchy for better readability, and improve the search functionality. 
+          </p>
+        </section>
+
+        <section class="process-section mb-5">
+          <h3 class="process-heading">design problem</h3>
+          <p class="process-body">
+            Through a combination of online research, think-aloud user testing, and UI/IA analysis, our team identified the key usability issues that currently hinder the Womenswear browsing experience: 
+            <ul>
+              <li>The faceted filter panel presents too many options at once, overwhelming users with a dense, unprioritized list of designers, categories, colours, and metadata.</li>
+              <li>Key filters such as Designer and Category lack visual hierarchy and are easy to overlook, especially for new or casual users.</li>
+              <li>The search engine only supports exact keyword matching, offering no typo correction, auto-suggest, or synonym handling, which leads to dead-end searches.</li>
+              <li>Minimal spacing, lightweight typography, and inconsistent hierarchy reduce readability, slow down scanning, and increase cognitive load across the Womenswear page.</li>
+              <li>New users struggle to navigate the filter panel and identify important controls, while experienced users report inefficiency and frustration with the current filter and search systems.</li>
+            </ul>
+          </p>
+          <img src="../../img/SSENSE/problem_home.png" class="img-fluid mb-3" alt="SSENSE design problem: Home">
+          <p class="caption small text-muted">All the advanced filters are presented to the user at once, making the searching experience visually overwhelmed. </p>
+          <img src="../../img/SSENSE/problem_search_1.png" class="img-fluid mb-3" alt="SSENSE search result with keyword sneakers">
+          <img src="../../img/SSENSE/problem_search_2.png" class="img-fluid mb-3" alt="SSENSE search result with keyword sneaker">
+          <img src="../../img/SSENSE/problem_search_3.png" class="img-fluid mb-3" alt="SSENSE search result with keyword sneeker">
+          <p class="caption small text-muted">Search results for the keywords “sneakers,” “sneaker,” and “sneeker” return completely different sets of products, demonstrating the website’s lack of typo tolerance and synonym handling. </p>
+        </section>
+
+        <section class="process-section mb-5">
+          <h3 class="process-heading">redesign ideation</h3>
+          <p class="process-body">
+            We began our redesign ideation by grounding our decisions in user research and card-sorting insights. Through an open card-sorting study with five participants, we discovered strong, consistent mental models around product type, simplified filter groupings, and familiar terminology. Participants naturally organized items under categories like Clothing, Shoes, Bags, and Accessories, and labelled filters collectively as “Sort By” or “Filter,” indicating a preference for clearer, consolidated structures. They also gravitated toward simpler language such as “New Arrivals” instead of “Latest Arrivals,” and grouped colour tags into a single, intuitive “Colour Options” category. These insights directly informed the conceptual direction of our redesign.
+          </p>
+          <p class="process-body">
+            With the given result, our ideation phase focused on restructuring the Womenswear IA to minimize cognitive load while enhancing clarity and discoverability. Early sketches and IA schematics reflect these goals: a more simplified navigation hierarchy, clearer naming conventions, and reorganized filter logic designed around real user mental models. 
+          </p>
+          <p class="process-body">
+            Our proposed IA introduces a consolidated Advanced Filter section, organizing Designers, Colours, Sizes, and additional filtering options under a single, easy-to-locate module. High-priority navigational elements—such as Category and Designer—were elevated to more prominent positions, while less frequently used filters were nested to reduce visual clutter. We also refined naming conventions for consistency and readability, replacing ambiguous or lengthy labels with user-preferred terminology. This new IA significantly improves findability, reduces decision fatigue, and lays the foundation for our medium-fidelity prototype, where we further refined layout, hierarchy, and interaction flow to support a more intuitive shopping experience.
+          </p>
+          <img src="../../img/SSENSE/new_ia.png" class="img-fluid mb-3" alt="Proposed New IA Diagram">
+          <p class="caption small text-muted">
+            Proposed New IA Diagram 
+          </p>
+          <p class="process-body">
+            To translate the revised IA into a usable interface, we developed a series of low-fidelity sketches that maps out the layout, hierarchy, and interaction patterns reflective of our structural redesign. The sketches focus on clarifying key user flows—particularly filtering, designer navigation, and search refinement. By visually separating high-value filters from secondary options, the layout creates a cleaner interface that supports quicker scanning and easier decision-making.
+          </p>
+          <div class="picGallery">
+          <img src="../../img/SSENSE/redesign_1.jpg" class="img-fluid mb-3 sketchImg" alt="Redesign sketch: Homepage">
+          </div>
+          <p class="caption small text-muted">
+            We decided to create a collapsed window for advanced filter like colours, sizes, and designers. This additional window helps to make the homepage less visually overwhelming. 
+          </p>
+          <div class="picGallery">
+          <img src="../../img/SSENSE/redesign_2.jpg" class="img-fluid mb-3 sketchImg" alt="Redesign sketch: Designer Page">
+          </div>
+          <p class="caption small text-muted">
+            A separated Designers Page is added for more efficient search.  
+          </p>
+          <div class="picGallery">
+          <img src="../../img/SSENSE/redesign_3.jpg" class="img-fluid mb-3 sketchImg" alt="Redesign sketch: Search Result">
+        </div>
+          <p class="caption small text-muted">
+            Redesigned search results interface showing explicit query feedback, improved filter visibility, and direct navigation to the selected designer’s page. 
+          </p>
+      </section>
+
+      <section class="process-section mb-5">
+          <h3 class="process-heading">user testing outcome &amp; Final Prototype</h3>
+          <p class="process-body">
+            Our user testing, conducted through two parallel tree tests, revealed clear differences in how participants navigated the original versus the redesigned IA of the SSENSE Womenswear section. Both structures achieved a 98% success rate, but the redesigned IA received higher user preference, with participants describing it as more intuitive and logically organized. However, the revised IA produced a lower directness score (59% vs. the original’s 73%), indicating that users needed to backtrack more often to reach final answers. Task performance further highlighted strengths and weaknesses: the improved placement of “Eyewear” under “Accessories” increased direct success from 73% to 82%, while burying “Designers” under “Advanced Filter” significantly reduced direct success for brand-based tasks (e.g., Balenciaga tote bag) from 73% to 27%. These findings revealed that while the redesigned IA established consistency and clearer structure, essential brand filters needed to be more visible.
+          </p>
+          <img src="../../img/SSENSE/cardSort.jpg" class="img-fluid mb-3" alt="card sorting results">
+          <p class="caption small text-muted">
+            The left shows the card sorting results of the proposed new IA of SSENSE; the right shows the card sorting results of the original IA. 
+          </p>
+
+          <p class="process-body">
+            Our final product introduces a medium-fidelity Figma prototype that aligns with user mental models, featuring clearer category organization, improved labeling, and a modular “Advanced Filter” system for Designers, Colours, Sizes, and Sort options. We also added missing elements such as a dedicated Size filter and refined terminology (e.g., “New Arrivals,” “Colour Options”) for consistency and clarity.
+          </p>
+        </section>
+
+        <section class="process-section mb-5">
+          <h3 class="process-heading">Future Development</h3>
+          <p class="process-body">
+          	Through this project, I gained a deeper understanding of information architecture and how structural decisions shape the way users navigate and make sense of a digital environment. I learned how concepts such as hierarchy, labeling, organization schemes, and user mental models directly influence clarity and findability—often more than the visual interface itself. Moreover, user testing played an equally important role in shaping our design process. These insights helped and refined our design solutions, demonstrating that design processes are iterative, evidence-based, and continuously validated. 
+          </p>
+
+          <p class="process-body">
+            In my future projects I want to improve on several points: <br>
+            1.	Explore alternative filter layouts—such as progressive disclosure or sticky filter bars—to balance minimalism with usability.<br> 
+            2.	Test responsive and mobile-specific patterns, as filter visibility and hierarchy often differ significantly on smaller screens. <br>
+            3.	Incorporate user testing earlier and more frequently to catch navigation issues before moving to sketches or prototypes. <br>
+            4. Develop a more detailed and finalized prototype as a final product.  
+          </p>
+        </section>
+
+      </div>
+
+      <!-- Right: fixed information panel -->
+      <div class="col-lg-4 detail-right border-start">
+        <aside class="detail-panel">
+
+          <!-- back link -->
+          <div class="small mb-3">
+            <a href="../index.html" class="text-decoration-none">&larr; Portfolio Gallery</a>
+          </div>
+
+          <!-- project title -->
+          <h1 class="detail-title mb-3">SSENSE Website Redesign</h1>
+
+          <!-- project category -->
+          <p class="detail-subtitle mb-4">
+            UI / UX
+          </p>
+
+          <!-- project meta -->
+          <div class="detail-meta small mb-4">
+            <div class="detail-meta-row">
+              <span class="detail-meta-label">Duration</span>
+              <span class="detail-meta-value">Jun - Jul 2025</span>
+            </div>
+            <div class="detail-meta-row">
+              <span class="detail-meta-label">Role</span>
+              <span class="detail-meta-value">Researcher, UI designer</span>
+            </div>
+            <div class="detail-meta-row">
+              <span class="detail-meta-label">Tools</span>
+              <span class="detail-meta-value">Figma</span>
+            </div>
+          </div>
+
+          <!-- proejct intro -->
+          <div class="detail-body small">
+            <p>
+              This project reimagines the information architecture of SSENSE’s womenswear section to improve navigation clarity, browsing efficiency, and overall user experience. Working as part of a four-person team, we conducted card sorting, tree testing, competitor analysis, and UI audits to identify usability pain points within the existing navigation flows, designer structures, and filtering systems. Our redesign aimed to build a clearer browsing flow by restructuring  the Designers and Advanced Filter categories. The final deliverables include a report analyzing the website’s intended user and current IA, a second report detailing user-testing insights alongside the proposed IA, and a medium-fidelity prototype illustrating the redesigned navigation.
+            </p>
+            <p>
+              Within the four-person team, my role focused on structural analysis and prototyping. I evaluated SSENSE’s existing UI components, prepared targeted questions for the tree-testing phase, and led the redesign and wireframing of key screens, translating usability insights into improved layouts and interaction patterns. I also compiled research findings and helped compile the project summary, ensuring our design rationale and improvements were communicated clearly and cohesively. 
+            </p>
+          </div>
+
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
