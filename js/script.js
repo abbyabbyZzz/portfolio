@@ -54,11 +54,11 @@ function initSiteInteractions() {
 
     // 换装图片路径（确认和 img 里的文件名一致）
     const avatars = [
-      "img/logo1.gif",
-      "img/logo2.gif",
-      "img/logo3.gif",
-      "img/logo4.gif",
-      "img/logo5.gif"
+      "img/logo1.GIF",
+      "img/logo2.GIF",
+      "img/logo3.GIF",
+      "img/logo4.GIF",
+      "img/logo5.GIF"
     ];
 
     let currentAvatar = 0;

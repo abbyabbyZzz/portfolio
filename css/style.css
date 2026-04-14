@@ -129,17 +129,30 @@ body {
   margin-top: 0;
 }
 
-/* 统一控制 carousel 高度 */
+/* 统一控制 carousel 高度（图片类：固定高度 + cover） */
 .project-carousel {
-  height: 650px;                 /* 你想要的高度：300/360/400 都可以 */
+  height: 650px;
   background: transparent;
   margin-bottom: 1.5rem;
 }
 
-/* 让内部全部填满这 360px，高度不再乱跑 */
+/* YouTube 轮播：16:9，与详情页 hero、各站嵌入一致 */
+.project-carousel:has(iframe.project-video) {
+  height: auto;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+}
+
+/* 让内部全部填满父级 */
 .project-carousel .carousel-inner,
 .project-carousel .carousel-item {
   height: 100%;
+}
+
+.project-carousel:has(iframe.project-video) .carousel-inner,
+.project-carousel:has(iframe.project-video) .carousel-item,
+.project-carousel:has(iframe.project-video) .carousel-frame {
+  min-height: 0;
 }
 
 /* 图片外层框 */
@@ -169,6 +182,7 @@ body {
   width: 100%;
   height: 100%;
   border: 0;
+  display: block;
 }
 
 

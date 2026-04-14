@@ -67,10 +67,14 @@
 }
 
 /* left panel layout */
-.hero video,
+.hero video {
+  width: 100%;
+}
+
 .hero iframe.project-video {
   width: 100%;
   aspect-ratio: 16 / 9;
+  height: auto;
   border: 0;
   display: block;
 }

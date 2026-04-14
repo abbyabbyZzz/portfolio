@@ -67,10 +67,15 @@
 }
 
 /* left panel layout */
-.hero video,
+.hero video {
+  width: 100%;
+}
+
+/* 与首页 Selected Projects 中 YouTube 轮播相同16:9 */
 .hero iframe.project-video {
   width: 100%;
   aspect-ratio: 16 / 9;
+  height: auto;
   border: 0;
   display: block;
 }
