@@ -71,14 +71,6 @@
   width: 100%;
 }
 
-.hero iframe.project-video {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  height: auto;
-  border: 0;
-  display: block;
-}
-
 .hero h3{
   margin: 1.3rem 0;
   color: darkred;

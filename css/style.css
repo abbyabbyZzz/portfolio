@@ -136,23 +136,10 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* YouTube 轮播：16:9，与详情页 hero、各站嵌入一致 */
-.project-carousel:has(iframe.project-video) {
-  height: auto;
-  aspect-ratio: 16 / 9;
-  width: 100%;
-}
-
 /* 让内部全部填满父级 */
 .project-carousel .carousel-inner,
 .project-carousel .carousel-item {
   height: 100%;
-}
-
-.project-carousel:has(iframe.project-video) .carousel-inner,
-.project-carousel:has(iframe.project-video) .carousel-item,
-.project-carousel:has(iframe.project-video) .carousel-frame {
-  min-height: 0;
 }
 
 /* 图片外层框 */
@@ -177,14 +164,6 @@ body {
   height: 100%;
   object-fit: cover;
 }
-
-.carousel-frame iframe.project-video {
-  width: 100%;
-  height: 100%;
-  border: 0;
-  display: block;
-}
-
 
 /* ==== CAPTION (Cargo style) ==== */
 
