@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Henc - Project Detail</title>
+	<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="../../css/page-enter.css">
+</head>
+<body>
+		<!-- NavBar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="../../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link" href="../index.html">Writings</a></li>
+        <li class="nav-item"><a class="nav-link" href="../../resume/index.html">Resume</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Project Detail Layout ===== -->
+  <main class="container-fluid project-detail-page">
+    <div class="row">
+
+      <div class="col-lg-8 detail-left">
+        <section class="hero mb-5">
+          <a href="https://abbyabbyzzz.github.io/beyondgallery/" target="_blank" rel="noopener noreferrer"><img src="../../img/gallery-beyond/thumbnail.png" class="img-fluid mb-3" alt="thumbnail"></a>
+          <h3 class="oneliner"><em>Step Beyond the Physical. Experience Art Without Boundaries.<br>
+          Click <a href="https://abbyabbyzzz.github.io/beyondgallery/" target="_blank" rel="noopener noreferrer">here</a> or the image to visit website</em></h3>
+        </section>
+
+        <!-- process content -->
+        <section class="process-section mb-5">
+          <h3 class="process-heading">context</h3>
+          <p class="process-body">
+            The purpose of this project was to create an immersive virtual exhibition that simulates a physical gallery experience, while making it accessible in a digital format. As indicated in the project concept, the goal was not only to replicate a gallery space, but to explore how interaction and interface design can reshape how users engage with artworks online.
+          </p>
+          <p class="process-body">
+            The primary audience includes students, visitors, and general users who may not be able to attend the physical exhibition in person. This includes users with limited access due to location, time constraints, or mobility. As a result, the project focuses on creating an experience that is both engaging and easy to navigate, even for users without prior experience in 3D or interactive environments.
+          </p>
+        </section>
+        
+        <section class="process-section mb-5">
+          <h3 class="process-heading">MVP Development</h3>
+          <p class="process-body">
+            In the initial planning stage, we aimed to create a fully immersive virtual gallery with free movement, interactive artworks, and a dynamic spatial layout. The intention was to replicate the feeling of physically walking through a gallery space.
+          </p>
+          <p class="process-body">
+            During the MVP stage (A3), we implemented a basic 360° environment using A-Frame, with limited navigation inside a single room. Interaction was handled through a raycasting system, where users would move their view using WASD and align a central raycast to “lock onto” interactive elements. This allowed users to select options and interact with objects by aiming within the environment.
+          </p>
+          <img src="../../img/gallery-beyond/mvp.png" class="img-fluid mb-3" alt="image of mvp">
+          <p class="caption small text-muted">
+            An early version of the virtual gallery built using A-Frame, featuring a single-room 360° environment and raycast-based interaction for selecting artworks.
+          </p>
+        </section>
+
+        <section class="process-section mb-5">
+          <h3 class="process-heading">User Testing</h3>
+          <p class="process-body">
+            Usability testing revealed several key interaction issues. Users often misclicked due to unclear interaction feedback, and the hidden cursor made it difficult to control where they were aiming within the 360° space. As a result, interactions felt unpredictable and sometimes frustrating.
+          </p>
+          <p class="process-body">
+            In addition, users were often unsure how to begin interacting with the exhibition. While the system was technically functional, the lack of clear visual cues made the navigation system difficult to learn.
+          </p>
+          <p class="process-body">
+            These findings highlighted that the main issue was not missing features, but a lack of interaction clarity and control, which shifted our focus toward improving usability rather than adding complexity.
+          </p>
+        </section>
+
+        <section class="process-section mb-5">
+          <h3 class="process-heading">Final Iteration</h3>
+          <p class="process-body">
+            Based on these insights, we made several major changes in the final iteration. 
+          </p>
+          <p class="process-body">
+            A key achievement in the final iteration was fully implementing the complete gallery environment, rather than the single-room setup used in the MVP. We introduced eight hotspot navigation points throughout the space, allowing users to move between different areas of the exhibition and creating a more coherent sense of spatial exploration. This made the experience feel closer to walking through a real gallery, while still remaining easy to navigate.
+          </p>
+          <img src="../../img/gallery-beyond/final-hotspots.png" class="img-fluid mb-3" alt="image of final product">
+          <p class="caption small text-muted">
+            The full gallery environment was implemented with eight navigation hotspots, allowing users to move between different positions and explore the entire exhibition space.
+          </p>
+          <p class="process-body">
+            In addition to navigation, we also implemented dedicated hotspots for each artwork, allowing users to directly access individual pieces within the space. Each artwork is linked to a separate detail page, where users can view more information and interact with the work in a more focused context. This helped balance spatial exploration with content clarity, ensuring that users could both navigate the exhibition and engage deeply with individual artworks.
+          </p>
+          <p class="process-body">
+            One major change was replacing the original raycasting interaction system used in the MVP. While raycasting allowed a more immersive interaction, it required a high level of precision and was difficult for users to control with mouse. In the final version, this was replaced with a drag-based navigation system, where users can directly control their view by clicking and dragging. This interaction was more intuitive, required less effort to learn, and significantly reduced confusion.
+          </p>
+          <p class="process-body">
+            In addition, we transitioned from A-Frame to Marzipano for building the 360° environment. In A-Frame, hotspot placement relied on manually inputting numerical values, which made alignment inefficient and often inaccurate. Marzipano provided a more intuitive and visual way to manage hotspots, improving both development efficiency and interaction precision.
+          </p>
+          <img src="../../img/gallery-beyond/art-hotspot.png" class="img-fluid mb-3" alt="art hotspots">
+          <p class="caption small text-muted">
+            Each artwork is linked with a hotspot, allowing users to directly access and engage with individual pieces within the gallery.
+          </p>
+          <img src="../../img/gallery-beyond/detail-page.png" class="img-fluid mb-3" alt="detail page of each work">
+          <p class="caption small text-muted">
+            Each artwork leads to a dedicated detail page where users can read the artist statement and interact with scanned 3D models for a closer and more immersive viewing experience.
+          </p>
+          <p class="process-body">
+            We also refined the interaction flow to improve fluidity. For example, users are able to continue dragging even when the cursor moves outside the browser window, which helps maintain a continuous viewing experience without interruption. Hotspot visibility and navigation structure were also improved to make interactive elements easier to identify.
+          </p>
+          <p class="process-body">
+            Overall, these changes reflect a shift from a technically functional but limited prototype to a more complete and user-friendly system that prioritizes clarity, accessibility, and structured interaction within a spatial environment.
+          </p>
+        </section>
+
+        <section class="process-section mb-5">
+          <h3 class="process-heading">Future Development</h3>
+          <p class="process-body">
+            In future iterations, several improvements could be made.  
+          </p>
+          <p class="process-body">
+            One direction is to explore VR-compatible tools, as Marzipano is primarily designed for web-based panoramic viewing and does not fully support immersive VR experiences. This limits the project’s ability to expand into VR headset-based interaction. 
+          </p>
+          <p class="process-body">
+            Another area for improvement is accessibility, including adding keyboard navigation, alternative interaction methods, and better support for assistive technologies.
+          </p>
+          <p class="process-body">
+            Finally, we would strengthen the brand identity of the exhibition by incorporating clearer institutional elements, such as UTM branding, to better situate the project within its original context.
+          </p>
+        </section>
+
+      </div>
+
+      <!-- right panel -->
+      <div class="col-lg-4 detail-right border-start">
+        <aside class="detail-panel">
+
+          <!-- back link -->
+          <div class="small mb-3">
+            <a href="../index.html" class="text-decoration-none">&larr; Portfolio Gallery</a>
+          </div>
+
+          <h1 class="detail-title mb-3">Gallery Beyond</h1>
+
+          <p class="detail-subtitle mb-4">
+            Interactive Media
+          </p>
+
+          <!-- project meta -->
+          <div class="detail-meta small mb-4">
+            <div class="detail-meta-row">
+              <span class="detail-meta-label">Duration</span>
+              <span class="detail-meta-value">Feb - Apr 2026</span>
+            </div>
+            <div class="detail-meta-row">
+              <span class="detail-meta-label">Role</span>
+              <span class="detail-meta-value">Main developer</span>
+            </div>
+            <div class="detail-meta-row">
+              <span class="detail-meta-label">Tools</span>
+              <span class="detail-meta-value">HTML, CSS, JS, Marzipano</span>
+            </div>
+          </div>
+
+          <!-- 正文（和原网站字体风格一致的小号正文） -->
+          <div class="detail-body small">
+            <p>
+              Gallery Beyond is a web-based virtual exhibition that recreates the experience of navigating an art gallery through a 360° interactive environment. The project explores how digital space can extend traditional exhibition formats and make art more accessible beyond physical and geographic limitations. This project was developed as part of a three-person team.
+            <p>
+              My main contribution focused on the technical implementation of the exhibition and interaction system. I was responsible for building the virtual environment and developing the hotspot-based navigation, allowing users to move between rooms and interact with artworks.
+            </p>
+            <p>
+              I worked with Marzipano to construct the 360° panoramic experience and refined interaction behaviors such as drag navigation and hotspot alignment. I also handled debugging and iteration, particularly in improving interaction clarity and usability.
+            </p>
+          </div>
+
+        </aside>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
