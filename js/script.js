@@ -192,11 +192,11 @@ function initAvatar() {
   tooltip.style.opacity = 1;
 
   const avatars = [
-    'img/logo1.GIF',
-    'img/logo2.GIF',
-    'img/logo3.GIF',
-    'img/logo4.GIF',
-    'img/logo5.GIF',
+    'img/logo1.gif',
+    'img/logo2.gif',
+    'img/logo3.gif',
+    'img/logo4.gif',
+    'img/logo5.gif',
   ];
   let currentAvatar = 0;
 
