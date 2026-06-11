@@ -1,297 +1,160 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/page-enter.css">
-    <link rel="stylesheet" href="css/video-embed.css">
-	<title>Welcome to My World | Home</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abigail Han — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-size: 1.1rem !important; }
+  </style>
 </head>
-
 <body>
-<!-- NavBar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-  <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
 
-    <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="gallery/index.html">Gallery</a></li>
-        <li class="nav-item"><a class="nav-link" href="gallery/index.html">Writings</a></li>
-        <li class="nav-item"><a class="nav-link" href="resume/index.html">Resume</a></li>
-      </ul>
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <a href="index.html" class="nav-brand">Abigail Han</a>
+    <div class="nav-links">
+      <a href="index.html">Homepage</a>
+      <a href="gallery/index.html">Gallery</a>
+      <a href="resume/index.html">Resume</a>
     </div>
+  </nav>
+
+  <!-- Bento Grid -->
+  <div class="bento-container">
+
+    <!-- Hero Cell -->
+    <div class="bento-cell hero-cell">
+      <div class="avatar-wrap">
+        <img id="avatarImage" src="img/logo1.GIF" alt="Abby's avatar">
+        <div id="cursor-tooltip">Click me!</div>
+      </div>
+      <div class="hero-text">
+        <span class="label">01 / About</span>
+        <h1 class="hero-title">Hi, I'm Abby!</h1>
+        <p class="hero-body">
+          Third year CCIT &amp; TCS student at the University of Toronto Mississauga.
+          Working across UX, information architecture, and game / interactive media.
+        </p>
+      </div>
+    </div>
+
+    <!-- Info / Contact Cell -->
+    <div class="bento-cell info-cell">
+      <div>
+        <span class="label">02 / Contact</span>
+        <div class="cell-content">
+          <a href="mailto:abigail.han@mail.utoronto.ca">Email</a>
+          <a href="https://www.linkedin.com/in/abigail-han-a16477336/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://www.behance.net/minatozzz" target="_blank" rel="noopener">Behance</a>
+        </div>
+      </div>
+    </div>
+
   </div>
-</nav>
 
-<div class="container-fluid page-wrapper">
-  <div class="row">
+  <!-- Selected Works -->
+  <section class="selected-works" id="selected-works">
+    <div class="works-sticky">
 
-    <!-- Left Sidebar -->
-    <aside class="col-md-4 col-lg-4 sidebar-left reveal-block">
-      <div class="sidebar-inner">
-      	<div class="avatar-wrapper">
-      <img
-        id="avatarImage"
-        class="avatar-image"
-        src="img/logo1.GIF"
-        alt="Abigail avatar"
-      >
-      <div id="cursor-tooltip">click me ✦</div>
-    </div>
+      <!-- Progress Bar (top edge) -->
+      <div class="progress-track">
+        <div class="progress-fill"></div>
+      </div>
 
-        <div>
-          <h1 class="mb-3 heroName">Hi, I'm Abby!</h1>
-          <p class="mb-4">
-            I'm a third year CCIT &amp; TCS student at the University of Toronto Mississauga, working across UX, 
-            information architecture, and game / interactive media.
+      <!-- Indicator -->
+      <div class="works-indicator">
+        <span class="label">Selected Works</span>
+        <div class="works-counter">
+          <span class="counter-current">01</span>
+          <span class="counter-divider">/</span>
+          <span class="counter-total">03</span>
+        </div>
+      </div>
+
+      <!-- Slide 1: Gallery Beyond -->
+      <div class="work-slide active" data-index="0">
+        <div class="slide-visual carousel" data-autoplay="2000">
+          <div class="carousel-track">
+            <div class="carousel-item active"><img src="img/Screenshot 2026-04-13 220542.png" alt="Gallery Beyond"></div>
+            <div class="carousel-item"><img src="img/Screenshot 2026-04-13 220608.png" alt="Gallery Beyond"></div>
+            <div class="carousel-item"><img src="img/Screenshot 2026-04-13 220645.png" alt="Gallery Beyond"></div>
+          </div>
+        </div>
+        <div class="slide-content">
+          <span class="label">Web Dev</span>
+          <h2>Gallery Beyond</h2>
+          <p class="slide-desc">
+            A web-based virtual exhibition that recreates navigating an art gallery in an interactive digital space — making the show accessible beyond physical and geographic limits.
           </p>
-
-          <div class="sidebar-links mb-4">
-            <p><strong>Contacts</strong></p>
-            <p><a href="mailto:abigail.han@mail.utoronto.ca">abigail.han@mail.utoronto.ca</a></p>
-            <p><a href="https://www.linkedin.com/in/abigail-han-a16477336/" target="_blank">LinkedIn ↗</a></p>
-            <p><a href="https://www.behance.net/minatozzz" target="_blank">Behance ↗</a></p>
-            <p><a href="resume/index.html">My Resume</a></p>
+          <div class="slide-meta">
+            <p><strong>Role:</strong> Main developer</p>
+            <p><strong>Tools:</strong> HTML, CSS, JS, Marzipano</p>
           </div>
-
-          <div>
-            <p class="mb-1"><strong>Work</strong></p>
-            <ul class="work-list ps-3 mb-0">
-              <li><a href="gallery/gallery-beyond/index.html">Gallery Beyond</a></li>
-              <li><a href="gallery/subscription-trap/index.html">Subscription Trap</a></li>
-              <li><a href="gallery/henc/index.html">Henc</a></li>
-              <li><a href="gallery/code-escape/index.html">Code: Escape</a></li>
-              <li><a href="gallery/index.html">View All Works ↗</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="site-footer mt-4">©2025 Abigail Han</div>
-      </div>
-    </aside>
-
-    <!-- 🔹 Right Scroll Section -->
-    <main class="col-md-8 col-lg-8 main-right">
-
-      <div class="d-flex justify-content-between align-items-start mb-3">
-        <div class="project-section-title">Selected Projects</div>
-        <div class="small text-muted" id="clock"></div>
-      </div>
-
-
-      <!-- ==== Gallery Beyond ==== -->
-      <section class="project-block reveal-block" id="project-gallery-beyond">
-
-        <div id="projectCarouselBeyond" class="carousel slide project-carousel mb-3">
-          <div class="carousel-inner">
-            <div class="carousel-item active"><div class="carousel-frame"><img src="img/Screenshot 2026-04-13 220542.png" alt="Gallery Beyond: 360° exhibition view"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/Screenshot 2026-04-13 220608.png" alt="Gallery Beyond: artwork presentation"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/Screenshot 2026-04-13 220645.png" alt="Gallery Beyond: landing experience"></div></div>
-          </div>
-        </div>
-
-        <div class="row project-info">
-          <div class="col-md-4">
-            <div class="project-meta-label">Project</div>
-            <div class="project-name">Gallery Beyond</div>
-          </div>
-
-          <div class="col-md-8 project-caption">
-            <p class="pc-title">Step beyond the physical. Experience art without boundaries.</p>
-            <p class="pc-subtitle">360° Immersive Gallery</p>
-
-            <p class="pc-meta">
-              Role: Main developer<br>
-              Tools: HTML, CSS, JS, Marzipano
-            </p>
-
-            <p class="pc-desc">
-              A web-based virtual exhibition that recreates navigating an art gallery in an interactive digital space—making the show accessible beyond physical and geographic limits.
-            </p>
-
-            <p class="pc-view"><a href="gallery/gallery-beyond/index.html">[View Detail]</a></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ==== Subscription Trap ==== -->
-      <section class="project-block reveal-block" id="project-subscription-trap">
-
-        <div id="projectCarouselSubscriptionTrap" class="carousel slide project-carousel mb-3">
-          <div class="carousel-inner">
-            <div class="carousel-item active"><div class="carousel-frame"><img src="img/subscription-trap/thumbnail.png" alt="Subscription Trap placeholder image"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/subscription-trap/carousel2.png" alt="Subscription Trap placeholder image"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/subscription-trap/carousel3.png" alt="Subscription Trap placeholder image"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/subscription-trap/carousel4.png" alt="Subscription Trap placeholder image"></div></div>
-          </div>
-        </div>
-
-        <div class="row project-info">
-          <div class="col-md-4">
-            <div class="project-meta-label">Project</div>
-            <div class="project-name">Subscription Trap</div>
-          </div>
-
-          <div class="col-md-8 project-caption">
-            <p class="pc-title">Find the cancel button before time runs out.</p>
-            <p class="pc-subtitle">Interactive web game</p>
-
-            <p class="pc-meta">
-              Role: Game designer &amp; developer<br>
-              Tools: HTML, CSS, JS
-            </p>
-
-            <p class="pc-desc">
-              An interactive web-based game that exposes how dark patterns subtly manipulate user decisions, challenging players to escape a deliberately misleading subscription flow.
-            </p>
-
-            <p class="pc-view"><a href="gallery/subscription-trap/index.html">[View Detail]</a></p>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- ==== PROJECT 1 ==== -->
-      <section class="project-block reveal-block" id="project-henc">
-
-        <div id="projectCarousel1" class="carousel slide project-carousel mb-3">
-          <div class="carousel-inner">
-            <div class="carousel-item active"><div class="carousel-frame"><img src="img/henc/FreeWindowStickerMockup_HENC.jpg"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/henc/Business_Card_HENC.jpg"></div></div>
-            <div class="carousel-item"><div class="carousel-frame"><img src="img/henc/BoxMockup_HENC.jpg"></div></div>
-          </div>
-        </div>
-
-        <div class="row project-info">
-          <div class="col-md-4">
-            <div class="project-meta-label">Project</div>
-            <div class="project-name">Henc</div>
-          </div>
-
-          <div class="col-md-8 project-caption">
-            <p class="pc-title">A brand of creativity, craftsmanship, and community. </p>
-            <p class="pc-subtitle">Brand Identity</p>
-
-            <p class="pc-meta">
-              Role: Lead Designer<br>
-              Tools: Illustrator, Indesign, Photoshop
-            </p>
-
-            <p class="pc-desc">
-              A brand identity project for a ceramic brand - Henc. Rooted in the values of community and making, Henc aims to be a warm and motivating brand that encourages self-expression as well as connection through creation.
-            </p>
-
-            <p class="pc-view"><a href="gallery/henc/index.html">[View Detail]</a></p>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- ==== PROJECT 2 ==== -->
-      <section class="project-block reveal-block" id="project-fps">
-        <div id="projectCarousel2" class="carousel slide project-carousel mb-3">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-        <div class="carousel-frame">
-          <div class="video-embed-cover video-embed-cover--carousel">
-            <iframe class="project-video"
-                    src="https://www.youtube.com/embed/9nSWD5wySC8?autoplay=1&mute=1&loop=1&playlist=9nSWD5wySC8&playsinline=1&rel=0"
-                    title="Code: Escape — gameplay video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowfullscreen
-                    loading="lazy"
-                    referrerpolicy="strict-origin-when-cross-origin"></iframe>
-          </div>
+          <a href="gallery/gallery-beyond/index.html" class="slide-link">View Detail →</a>
         </div>
       </div>
+
+      <!-- Slide 2: Subscription Trap -->
+      <div class="work-slide" data-index="1">
+        <div class="slide-visual carousel" data-autoplay="2000">
+          <div class="carousel-track">
+            <div class="carousel-item active"><img src="img/subscription-trap/thumbnail.png" alt="Subscription Trap"></div>
+            <div class="carousel-item"><img src="img/subscription-trap/carousel2.png" alt="Subscription Trap"></div>
+            <div class="carousel-item"><img src="img/subscription-trap/carousel3.png" alt="Subscription Trap"></div>
+            <div class="carousel-item"><img src="img/subscription-trap/carousel4.png" alt="Subscription Trap"></div>
+          </div>
+        </div>
+        <div class="slide-content">
+          <span class="label">Game</span>
+          <h2>Subscription Trap</h2>
+          <p class="slide-desc">
+            An interactive web-based game that exposes how dark patterns subtly manipulate user decisions, challenging players to escape a deliberately misleading subscription flow.
+          </p>
+          <div class="slide-meta">
+            <p><strong>Role:</strong> Game designer &amp; developer</p>
+            <p><strong>Tools:</strong> HTML, CSS, JS</p>
+          </div>
+          <a href="gallery/subscription-trap/index.html" class="slide-link">View Detail →</a>
+        </div>
+      </div>
+
+      <!-- Slide 3: Henc -->
+      <div class="work-slide" data-index="2">
+        <div class="slide-visual carousel" data-autoplay="2000">
+          <div class="carousel-track">
+            <div class="carousel-item active"><img src="img/henc/FreeWindowStickerMockup_HENC.jpg" alt="Henc"></div>
+            <div class="carousel-item"><img src="img/henc/Business_Card_HENC.jpg" alt="Henc"></div>
+            <div class="carousel-item"><img src="img/henc/BoxMockup_HENC.jpg" alt="Henc"></div>
+          </div>
+        </div>
+        <div class="slide-content">
+          <span class="label">Branding</span>
+          <h2>Henc</h2>
+          <p class="slide-desc">
+            A brand identity project for a ceramic brand rooted in community and making. Henc encourages self-expression and connection through creation.
+          </p>
+          <div class="slide-meta">
+            <p><strong>Role:</strong> Lead Designer</p>
+            <p><strong>Tools:</strong> Illustrator, Indesign, Photoshop</p>
+          </div>
+          <a href="gallery/henc/index.html" class="slide-link">View Detail →</a>
+        </div>
+      </div>
+
     </div>
-        </div>
+  </section>
 
-        <div class="row project-info">
-          <div class="col-md-4">
-            <div class="project-meta-label">Project</div>
-            <div class="project-name">Code: Escape</div>
-          </div>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <a href="gallery/index.html" class="footer-link">View All Works →</a>
+  </footer>
 
-          <div class="col-md-8 project-caption">
-            <p class="pc-title">Leave behind the past. Now the robots rule, all that matters is to escape. </p>
-            <p class="pc-subtitle">First-Person Shooting Game</p>
-
-            <p class="pc-meta">
-              Role: Concept Art Lead, Environmental Designer<br>
-              Tools: Unity
-            </p>
-
-            <p class="pc-desc">
-              A survival horror game that combines linear exploration, puzzle-solving, and FPS combat inside a futuristic hospital. You wake in a facility where machines have gained self-awareness and human bodies are reshaped by corporate experiments. 
-            </p>
-
-            <p class="pc-view"><a href="gallery/code-escape/index.html">[View Detail]</a></p>
-          </div>
-        </div>
-      </section>
-
-
-      <!-- ==== PROJECT 3 (Still in Progress) ==== -->
-      <!-- <section class="project-block" id="project-chef">
-        <div id="projectCarousel3" class="carousel slide project-carousel mb-3">
-          <div class="carousel-inner">
-            <div class="carousel-item active"><div class="carousel-frame"><img src="media/ssense-1.jpg"></div></div>
-          </div>
-        </div>
-
-        <div class="row project-info">
-          <div class="col-md-4">
-            <div class="project-meta-label">Project</div>
-            <div class="project-name">Chef Next Door</div>
-          </div>
-
-          <div class="col-md-8 project-caption">
-            <p class="pc-title">111</p>
-            <p class="pc-subtitle">Brand Identity</p>
-
-            <p class="pc-meta">
-              Role: Visual Design Lead<br>
-              Tools: Illustrator, Procreate, Photoshop
-            </p>
-
-            <p class="pc-desc">
-              1111111
-            </p>
-
-            <p class="pc-view"><a href="#">[View Detail]</a></p>
-          </div>
-        </div>
-      </section> -->
-
-    </main>
-  </div>
-</div>
-
-<!-- Bootstrap JS -->
-<script
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-  crossorigin="anonymous">
-</script>
-<script>
-
-  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  const tooltipList = [...tooltipTriggerList].map(el => new bootstrap.Tooltip(el));
-</script>
-
-<script src="js/script.js"></script>
+  <script src="js/script.js"></script>
 
 </body>
 </html>
