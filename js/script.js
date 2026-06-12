@@ -26,12 +26,31 @@ updateClock();
 /* ================================================================
    Selected Works — Scroll-driven slide switching
    ================================================================ */
+let footerVisible = false;
+
+function showFooter() {
+  const footer = document.querySelector('.site-footer');
+  if (!footer || footerVisible) return;
+  footer.classList.add('is-visible', 'is-dark');
+  document.body.classList.add('footer-open');
+  document.body.style.overflow = 'hidden';
+  footerVisible = true;
+}
+
+function hideFooter() {
+  const footer = document.querySelector('.site-footer');
+  if (!footer || !footerVisible) return;
+  footer.classList.remove('is-visible', 'is-dark');
+  document.body.classList.remove('footer-open');
+  document.body.style.overflow = '';
+  footerVisible = false;
+}
+
 function initSelectedWorks() {
   const section = document.getElementById('selected-works');
   if (!section) return;
 
   const slides = section.querySelectorAll('.work-slide');
-  const currentEl = section.querySelector('.counter-current');
   const progressFill = section.querySelector('.progress-fill');
   const total = slides.length;
 
@@ -39,27 +58,64 @@ function initSelectedWorks() {
 
   let currentIndex = 0;
   let isThrottled = false;
-  const throttleMs = 500;
+  const throttleMs = 900;
+  const overlay = section.querySelector('.works-transition-overlay');
+  let isTransitioning = false;
+  let lastSlideScrollCount = 0;
 
   function showSlide(index) {
     index = Math.max(0, Math.min(total - 1, index));
-    if (index === currentIndex) return;
-    currentIndex = index;
+    if (index === currentIndex || isTransitioning) return;
+    isTransitioning = true;
 
-    slides.forEach((slide, i) => {
-      slide.classList.toggle('active', i === index);
-    });
-
-    if (currentEl) {
-      currentEl.textContent = String(index + 1).padStart(2, '0');
+    // Phase 1: black cover from top to bottom
+    if (overlay) {
+      overlay.classList.add('cover');
     }
 
-    if (progressFill) {
-      progressFill.style.width = `${(index / (total - 1)) * 100}%`;
-    }
+    setTimeout(() => {
+      // At full cover, swap slide content
+      currentIndex = index;
+      if (currentIndex !== total - 1) {
+        lastSlideScrollCount = 0;
+      }
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+
+      if (progressFill) {
+        progressFill.style.width = `${(index / (total - 1)) * 100}%`;
+      }
+
+      if (!overlay) {
+        isTransitioning = false;
+        return;
+      }
+
+      // Phase 2: reveal from bottom to up
+      // Freeze at fully covered state with bottom origin, disable transition momentarily
+      overlay.classList.add('no-transition');
+      overlay.classList.remove('cover');
+      overlay.style.transform = 'scaleY(1)';
+      overlay.style.transformOrigin = 'bottom';
+      overlay.offsetHeight; // force reflow
+
+      // Re-enable transition and start reveal
+      overlay.classList.remove('no-transition');
+      overlay.classList.add('reveal');
+      overlay.style.transform = '';
+      overlay.style.transformOrigin = '';
+
+      setTimeout(() => {
+        overlay.classList.remove('reveal');
+        isTransitioning = false;
+      }, 400);
+    }, 400);
   }
 
   function onWheel(e) {
+    if (footerVisible) return;
+
     const rect = section.getBoundingClientRect();
     // Allow normal scroll until section top reaches viewport top
     if (rect.top > 0) return;
@@ -68,11 +124,25 @@ function initSelectedWorks() {
 
     const direction = e.deltaY > 0 ? 1 : -1;
 
-    // At first slide scrolling up, or last slide scrolling down:
-    // let the page scroll normally
-    if ((direction === -1 && currentIndex === 0) ||
-        (direction === 1 && currentIndex === total - 1)) {
+    // At first slide scrolling up: let the page scroll normally
+    if (direction === -1 && currentIndex === 0) {
       return;
+    }
+
+    // At last slide scrolling down: count scrolls, reveal footer after 2
+    if (direction === 1 && currentIndex === total - 1) {
+      e.preventDefault();
+      lastSlideScrollCount++;
+      if (lastSlideScrollCount >= 2) {
+        showFooter();
+        lastSlideScrollCount = 0;
+      }
+      return;
+    }
+
+    // Scrolling up from last slide: reset counter
+    if (direction === -1 && currentIndex === total - 1) {
+      lastSlideScrollCount = 0;
     }
 
     e.preventDefault();
@@ -84,10 +154,41 @@ function initSelectedWorks() {
     showSlide(currentIndex + direction);
   }
 
-  section.addEventListener('wheel', onWheel, { passive: false });
+  window.addEventListener('wheel', onWheel, { passive: false });
+
+  // Exit overlay: cover sticky container in black as it scrolls away
+  const stickyEl = section.querySelector('.works-sticky');
+  const exitOverlay = section.querySelector('.works-exit-overlay');
+  if (stickyEl && exitOverlay) {
+    const exitObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const ratio = entry.intersectionRatio;
+        const reveal = Math.max(0, Math.min(1, 1 - ratio));
+        exitOverlay.style.setProperty('--exit-reveal', reveal.toFixed(3));
+      });
+    }, {
+      threshold: Array.from({ length: 101 }, (_, i) => i / 100)
+    });
+    exitObserver.observe(stickyEl);
+  }
 
   // Initialize
   showSlide(0);
+}
+
+/* ================================================================
+   Footer Drawer — full-screen reveal from bottom
+   ================================================================ */
+function initFooterDrawer() {
+  const footer = document.querySelector('.site-footer');
+  if (!footer) return;
+
+  window.addEventListener('wheel', (e) => {
+    if (footerVisible && e.deltaY < 0) {
+      e.preventDefault();
+      hideFooter();
+    }
+  }, { passive: false });
 }
 
 /* ================================================================
@@ -201,7 +302,11 @@ function initAvatar() {
   let currentAvatar = 0;
 
   avatar.addEventListener('click', () => {
-    currentAvatar = (currentAvatar + 1) % avatars.length;
+    let nextIndex;
+    do {
+      nextIndex = Math.floor(Math.random() * avatars.length);
+    } while (nextIndex === currentAvatar && avatars.length > 1);
+    currentAvatar = nextIndex;
     avatar.src = avatars[currentAvatar];
   });
 
@@ -252,7 +357,7 @@ function init() {
   initCarousels();
   initLegacyCarousels();
   initAvatar();
-  initFooterReveal();
+  initFooterDrawer();
 }
 
 if (document.readyState === 'loading') {

@@ -7,10 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { font-size: 1.1rem !important; }
-  </style>
+  <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
+  <link rel="stylesheet" href="css/style.css?v=7">
 </head>
 <body>
 
@@ -61,23 +59,27 @@
   <section class="selected-works" id="selected-works">
     <div class="works-sticky">
 
+      <!-- Transition Overlay -->
+      <div class="works-transition-overlay"></div>
+
+      <!-- Exit Overlay (covers sticky container as it scrolls away) -->
+      <div class="works-exit-overlay"></div>
+
       <!-- Progress Bar (top edge) -->
       <div class="progress-track">
         <div class="progress-fill"></div>
       </div>
 
-      <!-- Indicator -->
-      <div class="works-indicator">
-        <span class="label">Selected Works</span>
-        <div class="works-counter">
-          <span class="counter-current">01</span>
-          <span class="counter-divider">/</span>
-          <span class="counter-total">03</span>
-        </div>
-      </div>
-
       <!-- Slide 1: Gallery Beyond -->
       <div class="work-slide active" data-index="0">
+        <div class="works-indicator">
+          <span class="label">Selected Works</span>
+          <div class="works-counter">
+            <span class="counter-current">01</span>
+            <span class="counter-divider">/</span>
+            <span class="counter-total">03</span>
+          </div>
+        </div>
         <div class="slide-visual carousel" data-autoplay="2000">
           <div class="carousel-track">
             <div class="carousel-item active"><img src="img/screenshot 2026-04-13 220542.png" alt="Gallery Beyond"></div>
@@ -101,6 +103,14 @@
 
       <!-- Slide 2: Subscription Trap -->
       <div class="work-slide" data-index="1">
+        <div class="works-indicator">
+          <span class="label">Selected Works</span>
+          <div class="works-counter">
+            <span class="counter-current">02</span>
+            <span class="counter-divider">/</span>
+            <span class="counter-total">03</span>
+          </div>
+        </div>
         <div class="slide-visual carousel" data-autoplay="2000">
           <div class="carousel-track">
             <div class="carousel-item active"><img src="img/subscription-trap/thumbnail.png" alt="Subscription Trap"></div>
@@ -125,6 +135,14 @@
 
       <!-- Slide 3: Henc -->
       <div class="work-slide" data-index="2">
+        <div class="works-indicator">
+          <span class="label">Selected Works</span>
+          <div class="works-counter">
+            <span class="counter-current">03</span>
+            <span class="counter-divider">/</span>
+            <span class="counter-total">03</span>
+          </div>
+        </div>
         <div class="slide-visual carousel" data-autoplay="2000">
           <div class="carousel-track">
             <div class="carousel-item active"><img src="img/henc/FreeWindowStickerMockup_HENC.jpg" alt="Henc"></div>
@@ -154,7 +172,7 @@
     <a href="gallery/index.html" class="footer-link">View All Works →</a>
   </footer>
 
-  <script src="js/script.js"></script>
+  <script src="js/script.js?v=2"></script>
 
 </body>
 </html>
