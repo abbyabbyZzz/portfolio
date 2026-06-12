@@ -156,6 +156,57 @@ function initSelectedWorks() {
 
   window.addEventListener('wheel', onWheel, { passive: false });
 
+  // Touch swipe handling for mobile
+  let touchStartY = 0;
+  let touchStartTime = 0;
+
+  section.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  section.addEventListener('touchend', (e) => {
+    if (footerVisible) return;
+
+    const rect = section.getBoundingClientRect();
+    if (rect.top > 0 || rect.bottom <= 0) return;
+
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchStartY - touchEndY;
+    const deltaTime = Date.now() - touchStartTime;
+
+    // Ignore small movements and very slow swipes
+    if (Math.abs(deltaY) < 40 || deltaTime > 600) return;
+
+    const direction = deltaY > 0 ? 1 : -1;
+
+    // At first slide swiping up: allow normal scroll
+    if (direction === -1 && currentIndex === 0) {
+      return;
+    }
+
+    // At last slide swiping down
+    if (direction === 1 && currentIndex === total - 1) {
+      lastSlideScrollCount++;
+      if (lastSlideScrollCount >= 2) {
+        showFooter();
+        lastSlideScrollCount = 0;
+      }
+      return;
+    }
+
+    // Swiping up from last slide: reset counter
+    if (direction === -1 && currentIndex === total - 1) {
+      lastSlideScrollCount = 0;
+    }
+
+    if (isThrottled) return;
+    isThrottled = true;
+    setTimeout(() => { isThrottled = false; }, throttleMs);
+
+    showSlide(currentIndex + direction);
+  }, { passive: true });
+
   // Exit overlay: cover sticky container in black as it scrolls away
   const stickyEl = section.querySelector('.works-sticky');
   const exitOverlay = section.querySelector('.works-exit-overlay');
@@ -349,6 +400,68 @@ function initFooterReveal() {
 }
 
 /* ================================================================
+   Project Detail — Mobile reorder + collapsible About
+   ================================================================ */
+function initProjectDetailMobile() {
+  const detailLeft = document.querySelector('.detail-left');
+  const detailRight = document.querySelector('.detail-right');
+  if (!detailLeft || !detailRight) return;
+
+  const hero = detailLeft.querySelector('.hero');
+  const title = detailRight.querySelector('.detail-title');
+  const body = detailRight.querySelector('.detail-body');
+  if (!hero || !title || !body) return;
+
+  // Create mobile header once
+  if (document.querySelector('.detail-mobile-header')) return;
+
+  const mobileHeader = document.createElement('div');
+  mobileHeader.className = 'detail-mobile-header';
+
+  // Clone title
+  const titleClone = title.cloneNode(true);
+  mobileHeader.appendChild(titleClone);
+
+  // Collapsible About Project
+  const aboutSection = document.createElement('div');
+  aboutSection.className = 'detail-mobile-about';
+
+  const aboutToggle = document.createElement('button');
+  aboutToggle.className = 'detail-mobile-toggle';
+  aboutToggle.setAttribute('type', 'button');
+  aboutToggle.innerHTML = 'About Project <span class="detail-mobile-icon">+</span>';
+  aboutToggle.addEventListener('click', () => {
+    aboutSection.classList.toggle('is-open');
+    const icon = aboutToggle.querySelector('.detail-mobile-icon');
+    icon.textContent = aboutSection.classList.contains('is-open') ? '−' : '+';
+  });
+
+  const aboutContent = document.createElement('div');
+  aboutContent.className = 'detail-mobile-about-content';
+  aboutContent.appendChild(body.cloneNode(true));
+
+  aboutSection.appendChild(aboutToggle);
+  aboutSection.appendChild(aboutContent);
+  mobileHeader.appendChild(aboutSection);
+
+  // Insert after hero
+  hero.after(mobileHeader);
+}
+
+function updateProjectDetailMobile() {
+  const isMobile = window.innerWidth < 992;
+  const detailRight = document.querySelector('.detail-right');
+  const mobileHeader = document.querySelector('.detail-mobile-header');
+
+  if (detailRight) {
+    detailRight.style.display = isMobile ? 'none' : '';
+  }
+  if (mobileHeader) {
+    mobileHeader.style.display = isMobile ? '' : 'none';
+  }
+}
+
+/* ================================================================
    Init
    ================================================================ */
 function init() {
@@ -358,6 +471,9 @@ function init() {
   initLegacyCarousels();
   initAvatar();
   initFooterDrawer();
+  initProjectDetailMobile();
+  updateProjectDetailMobile();
+  window.addEventListener('resize', updateProjectDetailMobile);
 }
 
 if (document.readyState === 'loading') {
