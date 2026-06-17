@@ -125,29 +125,11 @@ function initSelectedWorks() {
   // Arrow buttons
   const stickyEl = section.querySelector('.works-sticky');
   if (stickyEl) {
-    const arrowLeft = document.createElement('button');
-    arrowLeft.className = 'works-arrow works-arrow--left';
-    arrowLeft.innerHTML = '←';
-    arrowLeft.setAttribute('aria-label', 'Previous work');
-    arrowLeft.addEventListener('click', () => {
-      if (currentIndex > 0) showSlide(currentIndex - 1);
-    });
-
-    const arrowRight = document.createElement('button');
-    arrowRight.className = 'works-arrow works-arrow--right';
-    arrowRight.innerHTML = '→';
-    arrowRight.setAttribute('aria-label', 'Next work');
-    arrowRight.addEventListener('click', () => {
-      if (currentIndex < total - 1) showSlide(currentIndex + 1);
-    });
-
     const viewMoreBtn = document.createElement('a');
     viewMoreBtn.className = 'works-view-more';
     viewMoreBtn.href = 'gallery/index.html';
     viewMoreBtn.textContent = 'View More Works →';
 
-    stickyEl.appendChild(arrowLeft);
-    stickyEl.appendChild(arrowRight);
     stickyEl.appendChild(viewMoreBtn);
   }
 
