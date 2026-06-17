@@ -62,23 +62,20 @@ function initSelectedWorks() {
   const overlay = section.querySelector('.works-transition-overlay');
   let isTransitioning = false;
   let lastSlideScrollCount = 0;
+  let lastSlideCooldown = false;
 
   function showSlide(index) {
     index = Math.max(0, Math.min(total - 1, index));
     if (index === currentIndex || isTransitioning) return;
     isTransitioning = true;
 
-    // Phase 1: black cover from top to bottom
-    if (overlay) {
-      overlay.classList.add('cover');
+    if (index !== total - 1) {
+      lastSlideScrollCount = 0;
     }
 
-    setTimeout(() => {
-      // At full cover, swap slide content
+    if (!overlay || window.innerWidth < 768) {
+      // Mobile or no overlay: switch directly
       currentIndex = index;
-      if (currentIndex !== total - 1) {
-        lastSlideScrollCount = 0;
-      }
       slides.forEach((slide, i) => {
         slide.classList.toggle('active', i === index);
       });
@@ -87,20 +84,32 @@ function initSelectedWorks() {
         progressFill.style.width = `${(index / (total - 1)) * 100}%`;
       }
 
-      if (!overlay) {
+      setTimeout(() => {
         isTransitioning = false;
-        return;
+      }, 400);
+      return;
+    }
+
+    // Desktop: black cover transition
+    overlay.classList.add('cover');
+
+    setTimeout(() => {
+      // Swap content while screen is fully covered
+      currentIndex = index;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === index);
+      });
+
+      if (progressFill) {
+        progressFill.style.width = `${(index / (total - 1)) * 100}%`;
       }
 
-      // Phase 2: reveal from bottom to up
-      // Freeze at fully covered state with bottom origin, disable transition momentarily
       overlay.classList.add('no-transition');
       overlay.classList.remove('cover');
       overlay.style.transform = 'scaleY(1)';
       overlay.style.transformOrigin = 'bottom';
       overlay.offsetHeight; // force reflow
 
-      // Re-enable transition and start reveal
       overlay.classList.remove('no-transition');
       overlay.classList.add('reveal');
       overlay.style.transform = '';
@@ -113,9 +122,37 @@ function initSelectedWorks() {
     }, 400);
   }
 
-  function onWheel(e) {
-    if (footerVisible) return;
+  // Arrow buttons
+  const stickyEl = section.querySelector('.works-sticky');
+  if (stickyEl) {
+    const arrowLeft = document.createElement('button');
+    arrowLeft.className = 'works-arrow works-arrow--left';
+    arrowLeft.innerHTML = '←';
+    arrowLeft.setAttribute('aria-label', 'Previous work');
+    arrowLeft.addEventListener('click', () => {
+      if (currentIndex > 0) showSlide(currentIndex - 1);
+    });
 
+    const arrowRight = document.createElement('button');
+    arrowRight.className = 'works-arrow works-arrow--right';
+    arrowRight.innerHTML = '→';
+    arrowRight.setAttribute('aria-label', 'Next work');
+    arrowRight.addEventListener('click', () => {
+      if (currentIndex < total - 1) showSlide(currentIndex + 1);
+    });
+
+    const viewMoreBtn = document.createElement('a');
+    viewMoreBtn.className = 'works-view-more';
+    viewMoreBtn.href = 'gallery/index.html';
+    viewMoreBtn.textContent = 'View More Works →';
+
+    stickyEl.appendChild(arrowLeft);
+    stickyEl.appendChild(arrowRight);
+    stickyEl.appendChild(viewMoreBtn);
+  }
+
+  function onWheel(e) {
+    if (window.innerWidth < 768) return;
     const rect = section.getBoundingClientRect();
     // Allow normal scroll until section top reaches viewport top
     if (rect.top > 0) return;
@@ -129,9 +166,17 @@ function initSelectedWorks() {
       return;
     }
 
-    // At last slide scrolling down: count scrolls, reveal footer after 2
+    // At last slide scrolling down
     if (direction === 1 && currentIndex === total - 1) {
+      if (window.innerWidth < 768) {
+        // Mobile: allow normal scroll to footer
+        return;
+      }
+      // Desktop: reveal footer after 2 scrolls
       e.preventDefault();
+      if (lastSlideCooldown) return;
+      lastSlideCooldown = true;
+      setTimeout(() => { lastSlideCooldown = false; }, throttleMs);
       lastSlideScrollCount++;
       if (lastSlideScrollCount >= 2) {
         showFooter();
@@ -156,61 +201,10 @@ function initSelectedWorks() {
 
   window.addEventListener('wheel', onWheel, { passive: false });
 
-  // Touch swipe handling for mobile
-  let touchStartY = 0;
-  let touchStartTime = 0;
-
-  section.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
-    touchStartTime = Date.now();
-  }, { passive: true });
-
-  section.addEventListener('touchend', (e) => {
-    if (footerVisible) return;
-
-    const rect = section.getBoundingClientRect();
-    if (rect.top > 0 || rect.bottom <= 0) return;
-
-    const touchEndY = e.changedTouches[0].clientY;
-    const deltaY = touchStartY - touchEndY;
-    const deltaTime = Date.now() - touchStartTime;
-
-    // Ignore small movements and very slow swipes
-    if (Math.abs(deltaY) < 40 || deltaTime > 600) return;
-
-    const direction = deltaY > 0 ? 1 : -1;
-
-    // At first slide swiping up: allow normal scroll
-    if (direction === -1 && currentIndex === 0) {
-      return;
-    }
-
-    // At last slide swiping down
-    if (direction === 1 && currentIndex === total - 1) {
-      lastSlideScrollCount++;
-      if (lastSlideScrollCount >= 2) {
-        showFooter();
-        lastSlideScrollCount = 0;
-      }
-      return;
-    }
-
-    // Swiping up from last slide: reset counter
-    if (direction === -1 && currentIndex === total - 1) {
-      lastSlideScrollCount = 0;
-    }
-
-    if (isThrottled) return;
-    isThrottled = true;
-    setTimeout(() => { isThrottled = false; }, throttleMs);
-
-    showSlide(currentIndex + direction);
-  }, { passive: true });
-
   // Exit overlay: cover sticky container in black as it scrolls away
-  const stickyEl = section.querySelector('.works-sticky');
+  const stickyElObs = section.querySelector('.works-sticky');
   const exitOverlay = section.querySelector('.works-exit-overlay');
-  if (stickyEl && exitOverlay) {
+  if (stickyElObs && exitOverlay) {
     const exitObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         const ratio = entry.intersectionRatio;
@@ -220,7 +214,7 @@ function initSelectedWorks() {
     }, {
       threshold: Array.from({ length: 101 }, (_, i) => i / 100)
     });
-    exitObserver.observe(stickyEl);
+    exitObserver.observe(stickyElObs);
   }
 
   // Initialize
@@ -399,66 +393,42 @@ function initFooterReveal() {
   observer.observe(footer);
 }
 
-/* ================================================================
-   Project Detail — Mobile reorder + collapsible About
+/* ================================================================n   Project Detail — Previous / Next navigation
    ================================================================ */
-function initProjectDetailMobile() {
+function initProjectNav() {
   const detailLeft = document.querySelector('.detail-left');
-  const detailRight = document.querySelector('.detail-right');
-  if (!detailLeft || !detailRight) return;
+  if (!detailLeft) return;
 
-  const hero = detailLeft.querySelector('.hero');
-  const title = detailRight.querySelector('.detail-title');
-  const body = detailRight.querySelector('.detail-body');
-  if (!hero || !title || !body) return;
+  const projects = [
+    { name: 'Gallery Beyond', slug: 'gallery-beyond' },
+    { name: 'Subscription Trap', slug: 'subscription-trap' },
+    { name: 'Henc', slug: 'henc' },
+    { name: 'Code: Escape', slug: 'code-escape' },
+    { name: 'SSENSE IA Redesign', slug: 'ssense' },
+    { name: 'Flare', slug: 'flare' },
+    { name: 'The Cursed Gallery', slug: 'the-cursed-gallery' },
+    { name: '2024 Portfolio Website Prototype', slug: '2024-portfolio' },
+    { name: 'The Swallow', slug: 'the-swallow' },
+    { name: 'Weaving Dreams', slug: 'weaving-dreams' },
+  ];
 
-  // Create mobile header once
-  if (document.querySelector('.detail-mobile-header')) return;
+  const pathParts = window.location.pathname.split('/');
+  const currentSlug = pathParts[pathParts.length - 2];
+  const currentIndex = projects.findIndex(p => p.slug === currentSlug);
 
-  const mobileHeader = document.createElement('div');
-  mobileHeader.className = 'detail-mobile-header';
+  if (currentIndex === -1) return;
 
-  // Clone title
-  const titleClone = title.cloneNode(true);
-  mobileHeader.appendChild(titleClone);
+  const prev = projects[(currentIndex - 1 + projects.length) % projects.length];
+  const next = projects[(currentIndex + 1) % projects.length];
 
-  // Collapsible About Project
-  const aboutSection = document.createElement('div');
-  aboutSection.className = 'detail-mobile-about';
+  const nav = document.createElement('nav');
+  nav.className = 'project-nav-footer';
+  nav.innerHTML = `
+    <a href="../${prev.slug}/index.html" class="project-nav-prev">← ${prev.name}</a>
+    <a href="../${next.slug}/index.html" class="project-nav-next">${next.name} →</a>
+  `;
 
-  const aboutToggle = document.createElement('button');
-  aboutToggle.className = 'detail-mobile-toggle';
-  aboutToggle.setAttribute('type', 'button');
-  aboutToggle.innerHTML = 'About Project <span class="detail-mobile-icon">+</span>';
-  aboutToggle.addEventListener('click', () => {
-    aboutSection.classList.toggle('is-open');
-    const icon = aboutToggle.querySelector('.detail-mobile-icon');
-    icon.textContent = aboutSection.classList.contains('is-open') ? '−' : '+';
-  });
-
-  const aboutContent = document.createElement('div');
-  aboutContent.className = 'detail-mobile-about-content';
-  aboutContent.appendChild(body.cloneNode(true));
-
-  aboutSection.appendChild(aboutToggle);
-  aboutSection.appendChild(aboutContent);
-  mobileHeader.appendChild(aboutSection);
-
-  // Insert after hero
-  hero.after(mobileHeader);
-}
-
-function updateProjectDetailMobile() {
-  const isMobile = window.innerWidth < 992;
-  const detailRight = document.querySelector('.detail-right');
-  const mobileHeader = document.querySelector('.detail-mobile-header');
-
-  if (detailRight) {
-    detailRight.style.display = isMobile ? 'none' : '';
-  }
-  if (mobileHeader) {
-    mobileHeader.style.display = isMobile ? '' : 'none';
-  }
+  detailLeft.appendChild(nav);
 }
 
 /* ================================================================
@@ -471,9 +441,85 @@ function init() {
   initLegacyCarousels();
   initAvatar();
   initFooterDrawer();
-  initProjectDetailMobile();
-  updateProjectDetailMobile();
-  window.addEventListener('resize', updateProjectDetailMobile);
+  initProjectNav();
+  initHamburgerMenu();
+  initDetailPanelMobile();
+}
+
+/* ================================================================
+   Project Detail — Collapsable mobile panel
+   ================================================================ */
+function initDetailPanelMobile() {
+  const panel = document.querySelector('.detail-panel');
+  if (!panel) return;
+  if (panel.querySelector('.detail-toggle')) return;
+
+  const meta = panel.querySelector('.detail-meta');
+  const body = panel.querySelector('.detail-body');
+  if (!meta && !body) return;
+
+  // Create collapsable wrapper
+  const collapsable = document.createElement('div');
+  collapsable.className = 'detail-collapsable is-open';
+
+  // Move meta and body into collapsable
+  if (meta) collapsable.appendChild(meta);
+  if (body) collapsable.appendChild(body);
+
+  // Create toggle bar
+  const toggle = document.createElement('button');
+  toggle.className = 'detail-toggle';
+  toggle.textContent = 'Work Info';
+  toggle.setAttribute('aria-expanded', 'true');
+  toggle.setAttribute('type', 'button');
+
+  toggle.addEventListener('click', () => {
+    const isOpen = collapsable.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', isOpen);
+  });
+
+  // Insert after subtitle (or title)
+  const subtitle = panel.querySelector('.detail-subtitle');
+  if (subtitle) {
+    subtitle.after(toggle);
+    toggle.after(collapsable);
+  } else {
+    const title = panel.querySelector('.detail-title');
+    if (title) {
+      title.after(toggle);
+      toggle.after(collapsable);
+    } else {
+      panel.appendChild(toggle);
+      panel.appendChild(collapsable);
+    }
+  }
+}
+
+/* ================================================================
+   Hamburger Menu — inject toggle on mobile
+   ================================================================ */
+function initHamburgerMenu() {
+  const nav = document.querySelector('.site-nav');
+  const links = nav ? nav.querySelector('.nav-links') : null;
+  if (!nav || !links) return;
+
+  const toggle = document.createElement('button');
+  toggle.className = 'nav-toggle';
+  toggle.setAttribute('aria-label', 'Toggle menu');
+  toggle.innerHTML = '<span></span><span></span><span></span>';
+  nav.appendChild(toggle);
+
+  toggle.addEventListener('click', () => {
+    links.classList.toggle('is-open');
+    toggle.classList.toggle('is-open');
+  });
+
+  links.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      links.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+    });
+  });
 }
 
 if (document.readyState === 'loading') {

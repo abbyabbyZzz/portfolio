@@ -164,3 +164,26 @@ window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(initMasonry, 250);
 });
+
+/* Hamburger Menu */
+function initHamburgerMenu() {
+  const nav = document.querySelector('.site-nav');
+  const links = nav ? nav.querySelector('.nav-links') : null;
+  if (!nav || !links) return;
+
+  const toggle = document.createElement('button');
+  toggle.className = 'nav-toggle';
+  toggle.setAttribute('aria-label', 'Toggle menu');
+  toggle.innerHTML = '<span></span><span></span><span></span>';
+  nav.appendChild(toggle);
+
+  toggle.addEventListener('click', () => {
+    links.classList.toggle('is-open');
+  });
+
+  links.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => links.classList.remove('is-open'));
+  });
+}
+
+initHamburgerMenu();
