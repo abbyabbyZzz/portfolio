@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Node / build artifacts
+node_modules/
+dist/
+*.log
+
+# Claude Code workspace
+.claude/
+
+# IDE
+.vscode/
+.idea/
+
+# Local env
+.env
+.env.local
