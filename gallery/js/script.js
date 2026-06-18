@@ -10,7 +10,7 @@ if (revealRows.length > 0 && 'IntersectionObserver' in window) {
       }
     });
   }, {
-    threshold: 0.2 
+    threshold: 0.2
   });
 
   revealRows.forEach(row => rowObserver.observe(row));
@@ -27,6 +27,9 @@ function initMasonry() {
   const items = Array.from(container.querySelectorAll('.masonry-item:not(.d-none)'));
   if (items.length === 0) return;
 
+  // 清除旧的 spacer
+  container.querySelectorAll('.masonry-spacer').forEach(el => el.remove());
+
   // 清除之前的定位
   items.forEach(item => {
     item.style.position = '';
@@ -40,29 +43,50 @@ function initMasonry() {
   else if (window.innerWidth >= 768) cols = 2;
 
   const gap = 1.5; // rem
+  const gap_px = gap * 16;
   const containerWidth = container.offsetWidth;
-  const colWidth = (containerWidth - (gap * 16 * (cols - 1))) / cols;
+  const colWidth = (containerWidth - (gap_px * (cols - 1))) / cols;
 
-  // 初始化列高度数组
+  // 跟踪每列的高度和包含的项目
   const colHeights = new Array(cols).fill(0);
+  const colItems = Array.from({ length: cols }, () => []);
 
   // 按顺序排列每个项目
   items.forEach((item, index) => {
     // 找到最短的列
     const shortestCol = colHeights.indexOf(Math.min(...colHeights));
-    
+
     // 设置位置
     item.style.position = 'absolute';
     item.style.width = colWidth + 'px';
-    item.style.left = (shortestCol * (colWidth + gap * 16)) + 'px';
+    item.style.left = (shortestCol * (colWidth + gap_px)) + 'px';
     item.style.top = colHeights[shortestCol] + 'px';
-    
+
     // 更新列高度
-    colHeights[shortestCol] += item.offsetHeight + gap * 16;
+    colHeights[shortestCol] += item.offsetHeight + gap_px;
+    colItems[shortestCol].push(item);
   });
 
   // 设置容器高度
-  container.style.height = Math.max(...colHeights) + 'px';
+  const maxHeight = Math.max(...colHeights);
+  container.style.height = maxHeight + 'px';
+
+  // === 底部对齐：给较短的列添加不可见 spacer === //
+  colHeights.forEach((height, colIndex) => {
+    const diff = maxHeight - height;
+    if (diff > gap_px / 2) {
+      const spacer = document.createElement('div');
+      spacer.className = 'masonry-spacer';
+      spacer.style.position = 'absolute';
+      spacer.style.width = colWidth + 'px';
+      spacer.style.left = (colIndex * (colWidth + gap_px)) + 'px';
+      spacer.style.top = height + 'px';
+      spacer.style.height = diff + 'px';
+      spacer.style.pointerEvents = 'none';
+      spacer.style.opacity = '0';
+      container.appendChild(spacer);
+    }
+  });
 }
 
 // ==== tags filter ==== //
@@ -134,17 +158,15 @@ if (document.readyState === 'loading') {
     });
   });
 } else {
-  // 如果DOM已经加载完成
   waitForImages(() => {
     setTimeout(initMasonry, 100);
   });
 }
 
-// 监听DOM变化，自动重新布局（支持动态添加作品）
+// 监听DOM变化，自动重新布局
 const container = document.querySelector('.masonry-container');
 if (container && 'MutationObserver' in window) {
   const observer = new MutationObserver(() => {
-    // 延迟执行，确保新元素已完全插入
     setTimeout(() => {
       waitForImages(() => {
         initMasonry();
