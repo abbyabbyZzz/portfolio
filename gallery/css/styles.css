@@ -125,3 +125,14 @@ a{
     border-radius: 6px;
   }
 }
+
+/* ===== Gallery page wrapper ===== */
+.portfolio-page {
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .portfolio-page {
+    padding: 1.5rem 2rem;
+  }
+}

@@ -128,7 +128,7 @@ function initSelectedWorks() {
     const viewMoreBtn = document.createElement('a');
     viewMoreBtn.className = 'works-view-more';
     viewMoreBtn.href = 'gallery/index.html';
-    viewMoreBtn.textContent = 'View More Works →';
+    viewMoreBtn.textContent = (window.i18n && window.i18n.translations[window.i18n.getLang()]?.view_more) || 'View More Works →';
 
     stickyEl.appendChild(viewMoreBtn);
   }
@@ -451,7 +451,7 @@ function initDetailPanelMobile() {
   // Create toggle bar
   const toggle = document.createElement('button');
   toggle.className = 'detail-toggle';
-  toggle.textContent = 'Work Info';
+  toggle.textContent = (window.i18n && window.i18n.translations[window.i18n.getLang()]?.work_info) || 'Work Info';
   toggle.setAttribute('aria-expanded', 'true');
   toggle.setAttribute('type', 'button');
 
