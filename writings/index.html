@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Writings — Abigail Han</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
+  <link rel="stylesheet" href="../css/style.css?v=15">
+  <style>
+    .writings-page-wrap { padding: 1.5rem; }
+    @media (min-width: 768px) { .writings-page-wrap { padding: 1.5rem 2rem; } }
+    .portfolio-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .tag-btn { position: relative; background: transparent; border: none; font-size: 1rem; padding: 0.4rem 1rem; text-transform: lowercase; cursor: pointer; color: var(--fg); z-index: 1; overflow: hidden; }
+    .tag-btn::before { content: ''; position: absolute; inset: 0; background: var(--fg); transform: scaleY(0); transform-origin: top; transition: transform 0.35s ease; z-index: -1; }
+    .tag-btn.active::before, .tag-btn:hover::before { transform: scaleY(1); }
+    .tag-btn.active, .tag-btn:hover { color: #fff; }
+    .reveal-row { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal-row.in-view { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body class="page-enter writings-page">
+
+  <!-- Navigation -->
+  <nav class="site-nav">
+    <a href="../index.html" class="nav-brand">Abigail Han</a>
+    <div class="nav-links">
+      <a href="../index.html">Homepage</a>
+      <a href="../gallery/index.html">Gallery</a>
+      <a href="index.html">Writings</a>
+      <a href="../resume/index.html">Resume</a>
+    </div>
+  </nav>
+
+  <!-- Masthead -->
+  <div class="writings-page-wrap">
+
+    <!-- title -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="mb-0">Writings</h2>
+    </div>
+
+    <!-- Categories filter row -->
+    <div class="portfolio-tags mb-4" id="filter-buttons">
+      <button type="button" class="btn btn-sm tag-btn active" data-filter="all">all</button>
+      <button type="button" class="btn btn-sm tag-btn" data-filter="essays">essays</button>
+      <button type="button" class="btn btn-sm tag-btn" data-filter="journals">journals</button>
+      <button type="button" class="btn btn-sm tag-btn" data-filter="notes">notes</button>
+    </div>
+
+    <!-- Article grid -->
+    <div class="writings-grid" id="writings-grid">
+      <!-- Articles are rendered by JS -->
+    </div>
+
+  </div>
+
+  <script>
+    // Article data
+    const writings = [
+      {
+        slug: "virtual-exhibition",
+        title: "Rethinking Virtual Exhibitions as Spatial Systems",
+        category: "essays",
+        date: "April 10 2026",
+        cover: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        excerpt: "Exploring how virtual exhibitions transform information into navigable spatial experiences."
+      },
+      {
+        slug: "buying-to-feel",
+        title: "Buying to Feel: Emotional Consumerism Among Female University Students in Digital Spaces",
+        category: "journals",
+        date: "March 9 2026",
+        cover: "https://images.unsplash.com/photo-1763872038252-e6c4e0a11067?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        excerpt: "Digital platforms turn stress and insecurity into shopping habits by wrapping consumption in the language of self-care."
+      }, 
+      {
+        slug: "papers-please",
+        title: "Papers Please Play Journal",
+        category: "journals",
+        date: "May-June 2025",
+        cover: "https://miro.medium.com/1*Wto643yG6HgprZfAafHPdQ.jpeg",
+        excerpt: "A personal record of thoughts while playing Papers, Please."
+      },
+      {
+        slug: "sick-cute-and-pain",
+        title: "Sick-Cute and Pain: The Fetishization of Female Self-Harm in Needy Streamer Overload",
+        category: "essays",
+        date: "March 19 2025",
+        cover: "https://nintendoeverything.com/wp-content/uploads/Needy-Girl-Overdose-physical.jpg",
+        excerpt: "How Needy Streamer Overload uses cute aesthetics to commodify female pain."
+      },
+      {
+        slug: "the-world-of-visual-novels",
+        title: "Paths of Memory and Discovery: The World of Visual Novels",
+        category: "journals",
+        date: "February 27 2025",
+        cover: "https://images.unsplash.com/photo-1613487957484-32c977a8bd62?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        excerpt: "Examines 10 Japanese visual novels from year 1997 to 2007 crossing animation, gaming, and interactive fiction from their interactivity and branching narratives that illustrate personal identity, memory, and emotional growth."
+      },
+      {
+        slug: "laura-mulvey",
+        title: "Visual Pleasure and Narrative Cinema Article Analysis",
+        category: "notes",
+        date: "April 8 2024",
+        cover: "https://m.media-amazon.com/images/I/61H0PR5S3nL._AC_UF1000,1000_QL80_.jpg",
+        excerpt: " "
+      }
+      
+    ];
+
+    const CATEGORY_LABELS = {
+      essays: "essays",
+      journals: "journals",
+      notes: "notes"
+    };
+
+    let activeFilter = "all";
+
+    function renderGrid() {
+      const grid = document.getElementById("writings-grid");
+      const filtered = activeFilter === "all"
+        ? writings
+        : writings.filter(w => w.category === activeFilter);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p class="writings-grid-empty">No entries in this category yet.</p>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map((w, i) => `
+        <a href="${w.slug}/" class="article-card reveal-row" style="view-transition-name: article-${w.slug}">
+          <div class="article-card-image-wrap">
+            <img src="${w.cover}" alt="${w.title}" loading="${i < 3 ? 'eager' : 'lazy'}">
+          </div>
+          <div class="article-card-meta">
+            <span class="label">${w.date}</span>
+            <h2 class="article-card-title">${w.title}</h2>
+            <p class="article-card-excerpt">${w.excerpt}</p>
+          </div>
+        </a>
+      `).join("");
+
+    }
+
+    function observeCards() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal-row:not(.in-view)').forEach(el => observer.observe(el));
+    }
+
+    function initFilters() {
+      const buttons = document.querySelectorAll(".tag-btn");
+      buttons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          buttons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          activeFilter = btn.dataset.filter;
+          renderGrid();
+          observeCards();
+        });
+      });
+    }
+
+    function initHamburger() {
+      const nav = document.querySelector(".site-nav");
+      const links = nav ? nav.querySelector(".nav-links") : null;
+      if (!nav || !links) return;
+
+      const toggle = document.createElement("button");
+      toggle.className = "nav-toggle";
+      toggle.setAttribute("aria-label", "Toggle menu");
+      toggle.innerHTML = "<span></span><span></span><span></span>";
+      nav.appendChild(toggle);
+
+      toggle.addEventListener("click", () => {
+        links.classList.toggle("is-open");
+        toggle.classList.toggle("is-open");
+      });
+
+      links.querySelectorAll("a").forEach(a => {
+        a.addEventListener("click", () => {
+          links.classList.remove("is-open");
+          toggle.classList.remove("is-open");
+        });
+      });
+    }
+
+    renderGrid();
+    initFilters();
+    initHamburger();
+  </script>
+
+  <script>
+    observeCards();
+  </script>
+
+</body>
+</html>
