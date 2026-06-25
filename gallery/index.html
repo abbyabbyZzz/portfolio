@@ -30,6 +30,13 @@
     .projectMeta { padding: 0.75rem 0.75rem 1rem; }
     .project-title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
     .project-desc { font-size: 0.9rem; line-height: 1; color: #555; margin: 0; }
+    .img-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; cursor: zoom-out; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    .img-overlay.active { opacity: 1; pointer-events: auto; }
+    .img-overlay img { max-width: 95vw; height: 80vh; object-fit: contain; }
+    .overlay-nav { position: fixed; top: 50%; transform: translateY(-50%); font-size: 3rem; color: #fff; cursor: pointer; z-index: 1000; padding: 1rem; user-select: none; opacity: 0.6; transition: opacity 0.2s; }
+    .overlay-nav:hover { opacity: 1; }
+    .overlay-prev { left: 1rem; }
+    .overlay-next { right: 1rem; }
     @media (max-width: 767.98px) { .project-card { border-radius: 6px; } }
     .masonry-container { position: relative; width: 100%; }
     .masonry-item { margin-bottom: 1.5rem; width: 100%; }
@@ -287,9 +294,115 @@
       </article>
     </a>
     </div>
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="graphic design">
+        <div class="project-thumb">
+          <img src="../img/Garden%20of%20Words%20%231/1.jpg" alt="Garden of Words #1" style="cursor:zoom-in" data-gallery='["../img/Garden%20of%20Words%20%231/1.jpg","../img/Garden%20of%20Words%20%231/2.jpg","../img/Garden%20of%20Words%20%231/3.jpg"]'>
+        </div>
+        <div class="projectMeta">
+          <div class="project-title">Garden of Words</div>
+          <p class="project-desc">Instagram post design</p>
+        </div>
+      </article>
+    </div>
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="graphic design">
+        <div class="project-thumb">
+          <img src="../img/Garden%20of%20Words%20_3/1.jpg" alt="Garden of Words #3" style="cursor:zoom-in" data-gallery='["../img/Garden%20of%20Words%20_3/1.jpg","../img/Garden%20of%20Words%20_3/2.jpg","../img/Garden%20of%20Words%20_3/3.jpg"]'>
+        </div>
+        <div class="projectMeta">
+          <div class="project-title">Garden of Words #3</div>
+          <p class="project-desc">Instagram post design</p>
+        </div>
+      </article>
+    </div>
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="graphic design">
+        <div class="project-thumb">
+          <img src="../img/Studio%20X%20-%20Patches%20of%20Home%20IG%20Post/Revised.jpg" alt="Studio X" style="cursor:zoom-in" data-gallery='["../img/Studio%20X%20-%20Patches%20of%20Home%20IG%20Post/Revised.jpg","../img/Studio%20X%20-%20Patches%20of%20Home%20IG%20Post/2.jpg"]'>
+        </div>
+        <div class="projectMeta">
+          <div class="project-title">Patches of Home</div>
+          <p class="project-desc">Instagram post design</p>
+        </div>
+      </article>
+    </div>
+    <div class="masonry-item reveal-row">
+      <article class="project-card" data-category="interactive media">
+        <div class="project-thumb">
+          <img src="../img/Want%20to%20cancel%20your%20subscription%20It%E2%80%99s%20in%20here%20somewhere/1.jpg" alt="Want to cancel" style="cursor:zoom-in" data-gallery='["../img/Want%20to%20cancel%20your%20subscription%20It%E2%80%99s%20in%20here%20somewhere/1.jpg","../img/Want%20to%20cancel%20your%20subscription%20It%E2%80%99s%20in%20here%20somewhere/2.jpg"]'>
+        </div>
+        <div class="projectMeta">
+          <div class="project-title">Subscription Trap</div>
+          <p class="project-desc">Instagram post design</p>
+        </div>
+      </article>
+    </div>
 
   </div>
 </div>
+
+<div class="img-overlay" id="imgOverlay">
+    <span class="overlay-nav overlay-prev">&#8249;</span>
+    <img src="" alt="">
+    <span class="overlay-nav overlay-next">&#8250;</span>
+  </div>
+
+<script>
+  const overlay = document.getElementById('imgOverlay');
+  const overlayImg = overlay.querySelector('img');
+
+  const prevBtn = overlay.querySelector('.overlay-prev');
+  const nextBtn = overlay.querySelector('.overlay-next');
+  let currentGallery = [];
+  let currentIndex = 0;
+
+  document.querySelectorAll('.masonry-item').forEach(item => {
+    const link = item.querySelector('a');
+    if (link) return;
+    const card = item.querySelector('.project-card');
+    const img = item.querySelector('.project-thumb img');
+    const title = card?.querySelector('.project-title')?.textContent || '';
+    if (title === 'Singing Me') return;
+
+    if (img) {
+      let images = img.dataset.gallery ? JSON.parse(img.dataset.gallery) : [img.src];
+
+      item.style.cursor = 'zoom-in';
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentGallery = images;
+        currentIndex = 0;
+        overlayImg.src = currentGallery[0];
+        prevBtn.style.display = currentGallery.length > 1 ? 'block' : 'none';
+        nextBtn.style.display = currentGallery.length > 1 ? 'block' : 'none';
+        overlay.classList.add('active');
+      });
+    }
+  });
+
+  prevBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + currentGallery.length) % currentGallery.length;
+    overlayImg.src = currentGallery[currentIndex];
+  });
+
+  nextBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    currentIndex = (currentIndex + 1) % currentGallery.length;
+    overlayImg.src = currentGallery[currentIndex];
+  });
+
+  overlay.addEventListener('click', () => {
+    overlay.classList.remove('active');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') overlay.classList.remove('active');
+    if (e.key === 'ArrowLeft') prevBtn.click();
+    if (e.key === 'ArrowRight') nextBtn.click();
+  });
+</script>
 
 <script src="js/script.js?v=8"></script>
 </body>
