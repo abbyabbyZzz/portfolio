@@ -58,20 +58,33 @@ function initSelectedWorks() {
 
   let currentIndex = 0;
   let isThrottled = false;
-  const throttleMs = 900;
+  let wheelAccum = 0;
+  // Low threshold so one light trackpad flick counts; fixed cooldown
+  // (do not keep extending on inertia — that eats the next swipe).
+  const wheelThreshold = 10;
+  const cooldownMs = 750;
   const overlay = section.querySelector('.works-transition-overlay');
   let isTransitioning = false;
-  let lastSlideScrollCount = 0;
-  let lastSlideCooldown = false;
+
+  function normalizeDeltaY(e) {
+    if (e.deltaMode === 1) return e.deltaY * 16; // lines → px
+    if (e.deltaMode === 2) return e.deltaY * window.innerHeight; // pages → px
+    return e.deltaY;
+  }
+
+  function lockWheelGesture() {
+    isThrottled = true;
+    wheelAccum = 0;
+    setTimeout(() => {
+      isThrottled = false;
+      wheelAccum = 0;
+    }, cooldownMs);
+  }
 
   function showSlide(index) {
     index = Math.max(0, Math.min(total - 1, index));
     if (index === currentIndex || isTransitioning) return;
     isTransitioning = true;
-
-    if (index !== total - 1) {
-      lastSlideScrollCount = 0;
-    }
 
     if (!overlay || window.innerWidth < 768) {
       // Mobile or no overlay: switch directly
@@ -135,49 +148,61 @@ function initSelectedWorks() {
 
   function onWheel(e) {
     if (window.innerWidth < 768) return;
+    // Footer drawer owns wheel while open
+    if (footerVisible) return;
+
     const rect = section.getBoundingClientRect();
     // Allow normal scroll until section top reaches viewport top
     if (rect.top > 0) return;
     // Section has fully left viewport below
     if (rect.bottom <= 0) return;
 
-    const direction = e.deltaY > 0 ? 1 : -1;
+    const deltaY = normalizeDeltaY(e);
+
+    // Ignore horizontal-dominant trackpad gestures and tiny noise
+    if (Math.abs(e.deltaX) > Math.abs(deltaY)) return;
+    if (Math.abs(deltaY) < 0.5) return;
+
+    // Locked / mid-transition: swallow leftover inertia, but do not
+    // prolong the lock — otherwise the next flick gets eaten.
+    if (isThrottled || isTransitioning) {
+      if (!(deltaY < 0 && currentIndex === 0)) {
+        e.preventDefault();
+      }
+      return;
+    }
+
+    // Reset accum when direction flips mid-gesture
+    if (wheelAccum !== 0 && Math.sign(wheelAccum) !== Math.sign(deltaY)) {
+      wheelAccum = 0;
+    }
+    wheelAccum += deltaY;
+
+    if (Math.abs(wheelAccum) < wheelThreshold) {
+      if (!(wheelAccum < 0 && currentIndex === 0)) {
+        e.preventDefault();
+      }
+      return;
+    }
+
+    const direction = wheelAccum > 0 ? 1 : -1;
+    wheelAccum = 0;
 
     // At first slide scrolling up: let the page scroll normally
     if (direction === -1 && currentIndex === 0) {
       return;
     }
 
-    // At last slide scrolling down
+    // At last slide scrolling down: open footer
     if (direction === 1 && currentIndex === total - 1) {
-      if (window.innerWidth < 768) {
-        // Mobile: allow normal scroll to footer
-        return;
-      }
-      // Desktop: reveal footer after 2 scrolls
       e.preventDefault();
-      if (lastSlideCooldown) return;
-      lastSlideCooldown = true;
-      setTimeout(() => { lastSlideCooldown = false; }, throttleMs);
-      lastSlideScrollCount++;
-      if (lastSlideScrollCount >= 2) {
-        showFooter();
-        lastSlideScrollCount = 0;
-      }
+      lockWheelGesture();
+      showFooter();
       return;
     }
 
-    // Scrolling up from last slide: reset counter
-    if (direction === -1 && currentIndex === total - 1) {
-      lastSlideScrollCount = 0;
-    }
-
     e.preventDefault();
-
-    if (isThrottled) return;
-    isThrottled = true;
-    setTimeout(() => { isThrottled = false; }, throttleMs);
-
+    lockWheelGesture();
     showSlide(currentIndex + direction);
   }
 
