@@ -431,8 +431,8 @@ function initProjectNav() {
   const nav = document.createElement('nav');
   nav.className = 'project-nav-footer';
   nav.innerHTML = `
-    <a href="../${prev.slug}/index.html" class="project-nav-prev">← ${prev.name}</a>
-    <a href="../${next.slug}/index.html" class="project-nav-next">${next.name} →</a>
+    <a href="../${prev.slug}/index.html" class="project-nav-prev" data-no-transition>← ${prev.name}</a>
+    <a href="../${next.slug}/index.html" class="project-nav-next" data-no-transition>${next.name} →</a>
   `;
 
   detailLeft.appendChild(nav);

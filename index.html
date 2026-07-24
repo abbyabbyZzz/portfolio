@@ -4,12 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Abigail Han — Portfolio</title>
+  <script>
+    /* Prevent the homepage flashing before the session-only intro is mounted. */
+    window.PORTFOLIO_ALWAYS_SHOW_INTRO = false;
+    window.ALWAYS_PLAY_HOMEPAGE_INTRO = false;
+    try {
+      if (window.PORTFOLIO_ALWAYS_SHOW_INTRO || !sessionStorage.getItem('portfolioIntroPlayed')) {
+        document.documentElement.classList.add('intro-pending');
+      }
+      if (window.ALWAYS_PLAY_HOMEPAGE_INTRO || !sessionStorage.getItem('homepageEntrancePlayed')) {
+        document.documentElement.classList.add('homepage-entrance-pending');
+      }
+    } catch (error) {
+      document.documentElement.classList.add('intro-pending');
+      document.documentElement.classList.add('homepage-entrance-pending');
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
-  <link rel="stylesheet" href="css/style.css?v=20">
-  <script src="js/page-transition.js?v=4"></script>
+  <link rel="stylesheet" href="css/style.css?v=36">
+  <script src="js/page-transition.js?v=8"></script>
+  <script defer src="js/portfolio-intro-loader.js?v=18"></script>
+  <script defer src="js/animated-nav.js?v=1"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+  <script defer src="js/homepage-entrance.js?v=3"></script>
   <style>
     /* ===== Homepage: Bento Grid ===== */
     .bento-container {
@@ -485,13 +505,13 @@
 <body>
 
   <!-- Navigation -->
-  <nav class="site-nav">
-    <a href="index.html" class="nav-brand">Abigail Han</a>
+  <nav class="site-nav" data-intro-line="bottom">
+    <a href="index.html" class="nav-brand" data-intro-nav>Abigail Han</a>
   <div class="nav-links">
-      <a href="index.html">Homepage</a>
-      <a href="gallery/index.html">Gallery</a>
-      <a href="writings/index.html">Writings</a>
-      <a href="resume/index.html">Resume</a>
+      <a href="index.html" data-intro-nav>Homepage</a>
+      <a href="gallery/index.html" data-intro-nav>Gallery</a>
+      <a href="writings/index.html" data-intro-nav>Writings</a>
+      <a href="resume/index.html" data-intro-nav>Resume</a>
     </div>
   </nav>
 
@@ -499,15 +519,15 @@
   <div class="bento-container">
 
     <!-- Hero Cell -->
-    <div class="bento-cell hero-cell">
-      <div class="avatar-wrap">
+    <div class="bento-cell hero-cell" data-intro-line="right bottom">
+      <div class="avatar-wrap" data-intro-media>
         <img id="avatarImage" src="img/logo1.gif" alt="Abby's avatar">
         <div id="cursor-tooltip">Click me!</div>
       </div>
       <div class="hero-text">
-        <span class="label">01 / About</span>
-        <h1 class="hero-title">Hi, I'm Abby!</h1>
-        <p class="hero-body">
+        <span class="label" data-intro-copy>01 / About</span>
+        <h1 class="hero-title" data-intro-heading>Hi, I'm Abby!</h1>
+        <p class="hero-body" data-intro-copy>
           Third year CCIT &amp; TCS student at the University of Toronto Mississauga.
           Working across UX, information architecture, and game / interactive media.
         </p>
@@ -515,7 +535,7 @@
     </div>
 
     <!-- Info / Contact Cell -->
-    <div class="bento-cell info-cell">
+    <div class="bento-cell info-cell" data-intro-line="bottom" data-intro-module>
       <div>
         <span class="label">02 / Contact</span>
         <div class="cell-content">
@@ -529,7 +549,7 @@
   </div>
 
   <!-- Selected Works -->
-  <section class="selected-works" id="selected-works">
+  <section class="selected-works" id="selected-works" data-intro-module>
     <div class="works-sticky">
 
       <!-- Transition Overlay -->

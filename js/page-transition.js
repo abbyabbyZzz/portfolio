@@ -1,35 +1,26 @@
 /**
- * Abigail Han Portfolio — editorial page transition
+ * Abigail Han Portfolio — shared loading-screen page transition.
  *
- * This site is a static multi-page build, so the component carries a small
- * arrival flag through sessionStorage. The outgoing document covers first;
- * the incoming document recreates the covered overlay and reveals underneath.
+ * Outgoing pages load to 100%, then the destination recreates the same
+ * covered screen and dissolves it into the new document.
  */
 (function () {
   'use strict';
 
   const STORAGE_KEY = 'abigail-page-transition';
-  const ROW_COUNT = 6;
-  const STAGGER_MS = 80;
-  const ROW_DURATION_MS = 760;
-  const SAFETY_BUFFER_MS = 80;
-  const COVER_HOLD_MS = 280;
-  const COVER_ANIMATION_MS =
-    ROW_DURATION_MS + (ROW_COUNT - 1) * STAGGER_MS;
-  const REVEAL_END_MS = COVER_ANIMATION_MS + SAFETY_BUFFER_MS;
-  const NAVIGATION_START_MS = COVER_ANIMATION_MS + COVER_HOLD_MS;
-
-  const SYSTEM_LINES = [
-    'ABIGAIL HAN — CREATIVE TECHNOLOGIST',
-    'INDEXING DIGITAL EXPERIENCES',
-    'ASSEMBLING VISUAL SYSTEMS',
-    'PROCESSING INTERACTION DESIGN',
-    'GENERATING CREATIVE WORLDS',
-  ];
+  const TRANSITION_DURATION = 1050;
+  const COVER_HOLD = 140;
+  const ARRIVAL_DISSOLVE_DURATION = 900;
+  const scriptUrl = document.currentScript
+    ? document.currentScript.src
+    : new URL('js/page-transition.js', window.location.href).href;
+  const loaderUrl = new URL('portfolio-intro-loader.js?v=18', scriptUrl).href;
+  const root = document.documentElement;
+  let loaderPromise = null;
 
   function storageGet() {
     try {
-      const value = window.sessionStorage.getItem(STORAGE_KEY);
+      const value = sessionStorage.getItem(STORAGE_KEY);
       return value ? JSON.parse(value) : null;
     } catch (error) {
       return null;
@@ -37,19 +28,13 @@
   }
 
   function storageSet(value) {
-    try {
-      window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-    } catch (error) {
-      // Navigation still works if storage is unavailable.
-    }
+    try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value)); }
+    catch (error) { /* Navigation still works without storage. */ }
   }
 
   function storageRemove() {
-    try {
-      window.sessionStorage.removeItem(STORAGE_KEY);
-    } catch (error) {
-      // Nothing else is required.
-    }
+    try { sessionStorage.removeItem(STORAGE_KEY); }
+    catch (error) { /* Nothing else is required. */ }
   }
 
   const storedArrivalState = storageGet();
@@ -61,24 +46,109 @@
       ? storedArrivalState
       : null;
 
-  if (storedArrivalState && !arrivingState) {
-    storageRemove();
+  if (storedArrivalState && !arrivingState) storageRemove();
+  if (arrivingState) root.classList.add('is-page-arriving');
+
+  function loadLoader() {
+    if (window.PortfolioIntroLoader) {
+      return Promise.resolve(window.PortfolioIntroLoader);
+    }
+    if (loaderPromise) return loaderPromise;
+
+    loaderPromise = new Promise((resolve, reject) => {
+      let script = document.querySelector('script[src*="portfolio-intro-loader.js"]');
+      if (!script) {
+        script = document.createElement('script');
+        script.src = loaderUrl;
+        script.dataset.portfolioLoader = '';
+        document.head.appendChild(script);
+      }
+
+      function ready() {
+        if (window.PortfolioIntroLoader) resolve(window.PortfolioIntroLoader);
+        else reject(new Error('Portfolio loader did not initialize.'));
+      }
+
+      if (window.PortfolioIntroLoader) ready();
+      else {
+        script.addEventListener('load', ready, { once: true });
+        script.addEventListener('error', reject, { once: true });
+      }
+    });
+
+    return loaderPromise;
   }
 
-  if (arrivingState) {
-    document.documentElement.classList.add('is-page-arriving');
+  function labelFromPath(pathname) {
+    const cleanParts = pathname
+      .split('/')
+      .filter(Boolean)
+      .filter((part) => !/^index\.html?$/i.test(part));
+
+    if (cleanParts.length === 0) return 'HOMEPAGE';
+
+    return cleanParts[cleanParts.length - 1]
+      .replace(/\.html?$/i, '')
+      .replace(/[-_]+/g, ' ')
+      .toUpperCase();
+  }
+
+  function destinationLabel(link) {
+    const url = new URL(link.href, window.location.href);
+    const pathnameLabel = labelFromPath(url.pathname);
+    if (link.closest('.site-nav')) return pathnameLabel;
+
+    const originalNavText = link.querySelector('.nav-text--original');
+    let linkLabel = (
+      link.dataset.transitionLabel ||
+      (originalNavText ? originalNavText.textContent : '') ||
+      link.textContent
+    )
+      .replace(/[←→↗]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (
+      linkLabel.length % 2 === 0 &&
+      linkLabel.slice(0, linkLabel.length / 2).toLowerCase() ===
+        linkLabel.slice(linkLabel.length / 2).toLowerCase()
+    ) {
+      linkLabel = linkLabel.slice(0, linkLabel.length / 2);
+    }
+
+    if (/^(view detail|view more works|view all works)$/i.test(linkLabel)) {
+      return pathnameLabel;
+    }
+
+    return (linkLabel || pathnameLabel).toUpperCase();
+  }
+
+  function cleanStaleLoader() {
+    const loader = document.querySelector('.portfolio-intro');
+    if (loader) loader.remove();
+
+    Array.from(document.body.children).forEach((element) => {
+      if (!element.classList.contains('intro-home-content')) return;
+      element.classList.remove('intro-home-content');
+      element.removeAttribute('inert');
+      element.removeAttribute('aria-hidden');
+    });
+
+    document.body.style.removeProperty('overflow');
+    document.body.removeAttribute('aria-busy');
+    root.classList.remove(
+      'intro-active',
+      'intro-revealing',
+      'is-page-transitioning',
+      'is-page-transition-revealing',
+      'is-page-arriving'
+    );
   }
 
   class PageTransition {
-    constructor(options = {}) {
-      this.rowCount = options.rowCount || ROW_COUNT;
+    constructor() {
       this.isTransitioning = false;
-      this.overlay = null;
-      this.originalOverflow = '';
-      this.reducedMotion = window.matchMedia(
-        '(prefers-reduced-motion: reduce)'
-      );
-
+      this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       this.onDocumentClick = this.onDocumentClick.bind(this);
       this.onPageShow = this.onPageShow.bind(this);
     }
@@ -87,242 +157,152 @@
       document.addEventListener('click', this.onDocumentClick, true);
       window.addEventListener('pageshow', this.onPageShow);
 
-      if (arrivingState) {
-        this.revealArrival(arrivingState);
+      if (arrivingState) this.revealArrival(arrivingState);
+      else if (window.PORTFOLIO_ALWAYS_SHOW_INTRO === undefined) {
+        loadLoader().catch(() => {});
       }
     }
 
     isEligibleLink(link, event) {
       if (!link || this.isTransitioning) return false;
       if (event.defaultPrevented || event.button !== 0) return false;
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-        return false;
-      }
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return false;
       if (link.hasAttribute('download')) return false;
       if (link.target && link.target.toLowerCase() !== '_self') return false;
       if (link.dataset.noTransition !== undefined) return false;
+      if (link.matches('.project-nav-prev, .project-nav-next')) return false;
 
       const rawHref = link.getAttribute('href');
       if (!rawHref || rawHref.startsWith('#')) return false;
       if (/^(mailto:|tel:|javascript:)/i.test(rawHref)) return false;
 
       let destination;
-      try {
-        destination = new URL(link.href, window.location.href);
-      } catch (error) {
-        return false;
-      }
+      try { destination = new URL(link.href, window.location.href); }
+      catch (error) { return false; }
 
       if (destination.origin !== window.location.origin) return false;
       if (
         destination.pathname === window.location.pathname &&
         destination.search === window.location.search
-      ) {
-        return false;
-      }
+      ) return false;
 
       return true;
     }
 
     onDocumentClick(event) {
-      const link =
-        event.target instanceof Element
-          ? event.target.closest('a[href]')
-          : null;
+      const link = event.target instanceof Element
+        ? event.target.closest('a[href]')
+        : null;
+
       if (!this.isEligibleLink(link, event)) {
         if (this.isTransitioning && link) event.preventDefault();
         return;
       }
 
       event.preventDefault();
-      this.navigate(link.href, this.getDestinationLabel(link));
+      if (link.dataset.historyBack !== undefined) {
+        this.navigateBack(link.href);
+        return;
+      }
+
+      this.navigate(link.href, destinationLabel(link));
     }
 
-    navigate(url, destinationLabel) {
+    navigateBack(fallbackUrl) {
+      let destination = new URL(fallbackUrl, window.location.href);
+      let useBrowserHistory = false;
+
+      try {
+        const referrer = new URL(document.referrer);
+        const isPreviousInternalPage =
+          referrer.origin === window.location.origin &&
+          `${referrer.pathname}${referrer.search}` !== currentPath;
+        if (isPreviousInternalPage) {
+          destination = referrer;
+          useBrowserHistory = window.history.length > 1;
+        }
+      } catch (error) {
+        // Direct visits use the link's explicit fallback.
+      }
+
+      this.navigate(destination.href, labelFromPath(destination.pathname), {
+        historyBack: useBrowserHistory,
+      });
+    }
+
+    navigate(url, label, options = {}) {
       if (this.isTransitioning) return;
 
       if (this.reducedMotion.matches) {
         storageRemove();
-        window.location.assign(url);
+        if (options.historyBack) window.history.back();
+        else window.location.assign(url);
         return;
       }
 
       this.isTransitioning = true;
-      this.lockPage();
-      document.documentElement.classList.add('is-page-transitioning');
-      document.body.setAttribute('aria-busy', 'true');
+      root.classList.add('is-page-transitioning');
 
-      this.overlay = this.createOverlay(destinationLabel);
-      document.body.appendChild(this.overlay);
+      loadLoader().then((loader) => {
+        loader.play({
+          label,
+          duration: TRANSITION_DURATION,
+          hold: COVER_HOLD,
+          coverOnly: true,
+          rememberSession: false,
+          onCovered: () => {
+            const destination = new URL(url, window.location.href);
+            storageSet({
+              destinationLabel: label,
+              destinationPath: `${destination.pathname}${destination.search}`,
+              historyBack: Boolean(options.historyBack),
+              createdAt: Date.now(),
+            });
 
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          this.overlay.classList.add('is-covering');
+            if (options.historyBack) window.history.back();
+            else window.location.assign(url);
+          },
         });
+      }).catch(() => {
+        this.isTransitioning = false;
+        root.classList.remove('is-page-transitioning');
+        if (options.historyBack) window.history.back();
+        else window.location.assign(url);
       });
-
-      window.setTimeout(() => {
-        const destination = new URL(url, window.location.href);
-        storageSet({
-          destinationLabel,
-          destinationPath: `${destination.pathname}${destination.search}`,
-          createdAt: Date.now(),
-        });
-        window.location.assign(url);
-      }, NAVIGATION_START_MS);
     }
 
     revealArrival(state) {
       this.isTransitioning = true;
-      this.lockPage();
+      root.classList.add('is-page-transition-revealing');
 
-      document.body.setAttribute('aria-busy', 'true');
-      this.overlay = this.createOverlay(
-        state.destinationLabel || this.labelFromPath(window.location.pathname),
-        true
-      );
-      document.body.appendChild(this.overlay);
-      document.documentElement.classList.add('is-page-transition-revealing');
-      document.documentElement.classList.remove('is-page-arriving');
-      storageRemove();
-
-      const startReveal = () => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            this.overlay.classList.add('is-revealing');
-          });
+      loadLoader().then((loader) => {
+        loader.play({
+          label: state.destinationLabel || labelFromPath(window.location.pathname),
+          revealOnly: true,
+          hold: 80,
+          exitDuration: ARRIVAL_DISSOLVE_DURATION,
+          rememberSession: false,
+          onComplete: () => this.finish(),
         });
-
-        window.setTimeout(() => {
-          this.finish();
-        }, REVEAL_END_MS);
-      };
-
-      if (this.reducedMotion.matches) {
-        document.documentElement.classList.remove('is-page-arriving');
+        root.classList.remove('is-page-arriving');
+        storageRemove();
+      }).catch(() => {
         storageRemove();
         this.finish();
-        return;
-      }
-
-      const waitForContent = new Promise((resolve) => {
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', resolve, { once: true });
-        } else {
-          resolve();
-        }
       });
-
-      waitForContent.then(() => {
-        const fontsReady = document.fonts
-          ? document.fonts.ready
-          : Promise.resolve();
-
-        return Promise.race([
-          fontsReady,
-          new Promise((resolve) => window.setTimeout(resolve, 220)),
-        ]);
-      }).then(startReveal);
-    }
-
-    createOverlay(destinationLabel, covered = false) {
-      const overlay = document.createElement('div');
-      overlay.className = `page-transition${covered ? ' is-covered' : ''}`;
-      overlay.setAttribute('aria-hidden', 'true');
-      overlay.style.setProperty('--transition-row-count', this.rowCount);
-
-      const finalLine = `OPENING ${destinationLabel || 'DIGITAL ARCHIVE'}`;
-      const lines = [...SYSTEM_LINES, finalLine].slice(0, this.rowCount);
-
-      lines.forEach((line, index) => {
-        const slot = document.createElement('div');
-        slot.className = 'page-transition__slot';
-        slot.style.setProperty('--row-index', index);
-        slot.style.setProperty('--cover-delay', `${(this.rowCount - 1 - index) * STAGGER_MS}ms`);
-        slot.style.setProperty('--reveal-delay', `${index * STAGGER_MS}ms`);
-
-        const panel = document.createElement('div');
-        panel.className = 'page-transition__panel';
-
-        const text = document.createElement('span');
-        text.className = 'page-transition__text';
-        text.textContent = line;
-
-        const meta = document.createElement('span');
-        meta.className = 'page-transition__meta';
-
-        const indexLabel = document.createElement('span');
-        indexLabel.textContent = `[${String(index + 1).padStart(2, '0')}/${String(this.rowCount).padStart(2, '0')}]`;
-
-        const percentage = document.createElement('span');
-        percentage.textContent = `${String(Math.round(((index + 1) / this.rowCount) * 100)).padStart(3, '0')}%`;
-
-        meta.append(indexLabel, percentage);
-        panel.append(text, meta);
-        slot.appendChild(panel);
-        overlay.appendChild(slot);
-      });
-
-      return overlay;
-    }
-
-    getDestinationLabel(link) {
-      const url = new URL(link.href, window.location.href);
-      const pathnameLabel = this.labelFromPath(url.pathname);
-      const linkLabel = link.textContent
-        .replace(/[←→↗]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-
-      if (/^(view detail|view more works|view all works)$/i.test(linkLabel)) {
-        return pathnameLabel;
-      }
-
-      return (linkLabel || pathnameLabel).toUpperCase();
-    }
-
-    labelFromPath(pathname) {
-      const cleanParts = pathname
-        .split('/')
-        .filter(Boolean)
-        .filter((part) => !/^index\.html?$/i.test(part));
-
-      if (cleanParts.length === 0) return 'HOMEPAGE';
-
-      return cleanParts[cleanParts.length - 1]
-        .replace(/\.html?$/i, '')
-        .replace(/[-_]+/g, ' ')
-        .toUpperCase();
-    }
-
-    lockPage() {
-      this.originalOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
     }
 
     finish() {
-      if (this.overlay) {
-        this.overlay.remove();
-        this.overlay = null;
-      }
-
-      document.documentElement.classList.add('has-page-transitioned');
-      document.documentElement.classList.remove(
-        'is-page-transitioning',
-        'is-page-transition-revealing',
-        'is-page-arriving'
-      );
-      document.documentElement.style.removeProperty('background');
-      document.body.removeAttribute('aria-busy');
-      document.body.style.overflow = this.originalOverflow;
+      cleanStaleLoader();
+      root.classList.add('has-page-transitioned');
       this.isTransitioning = false;
     }
 
     onPageShow(event) {
-      if (event.persisted) {
-        storageRemove();
-        this.finish();
-      }
+      if (!event.persisted) return;
+      storageRemove();
+      cleanStaleLoader();
+      this.isTransitioning = false;
     }
   }
 
@@ -330,23 +310,15 @@
     const transition = new PageTransition();
     transition.init();
     window.pageTransition = transition;
-
-    if (!arrivingState) {
-      requestAnimationFrame(() => {
-        document.documentElement.style.removeProperty('background');
-      });
-    }
   }
 
-  if (document.body) {
-    boot();
-  } else {
+  if (document.body) boot();
+  else {
     const bodyObserver = new MutationObserver(() => {
       if (!document.body) return;
       bodyObserver.disconnect();
       boot();
     });
-
     bodyObserver.observe(document.documentElement, { childList: true });
   }
 
