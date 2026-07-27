@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
   <link rel="stylesheet" href="css/style.css?v=36">
-  <script src="js/page-transition.js?v=8"></script>
+  <script src="js/page-transition.js?v=10"></script>
   <script defer src="js/portfolio-intro-loader.js?v=18"></script>
   <script defer src="js/animated-nav.js?v=1"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
@@ -278,10 +278,16 @@
       padding: 3.5rem 3rem 2rem;
       opacity: 0;
       pointer-events: none;
+      color: inherit;
+      text-decoration: none;
     }
     .work-slide.active {
       opacity: 1;
       pointer-events: auto;
+      cursor: pointer;
+    }
+    .work-slide:hover {
+      text-decoration: none;
     }
     .slide-visual {
       width: 100%;
@@ -317,6 +323,10 @@
       object-fit: cover;
       border-radius: 4px;
       display: block;
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .work-slide:hover .slide-visual .carousel-item.active img {
+      transform: scale(1.015);
     }
     .slide-visual img {
       width: 100%;
@@ -499,6 +509,12 @@
       .work-slide {
         transition: none;
       }
+      .slide-visual .carousel-item img {
+        transition: none;
+      }
+      .work-slide:hover .slide-visual .carousel-item.active img {
+        transform: none;
+      }
     }
   </style>
 </head>
@@ -564,7 +580,7 @@
       </div>
 
       <!-- Slide 1: Gallery Beyond -->
-      <div class="work-slide active" data-index="0">
+      <a href="gallery/gallery-beyond/index.html" class="work-slide active" data-index="0" aria-label="View Gallery Beyond project">
         <div class="works-indicator">
           <span class="label">Selected Works</span>
           <div class="works-counter">
@@ -590,12 +606,12 @@
             <p><strong>Role:</strong> <span>Main developer</span></p>
             <p><strong>Tools:</strong> <span>HTML, CSS, JS, Marzipano</span></p>
           </div>
-          <a href="gallery/gallery-beyond/index.html" class="slide-link">View Detail →</a>
+          <span class="slide-link">View Detail →</span>
         </div>
-      </div>
+      </a>
 
       <!-- Slide 2: Subscription Trap -->
-      <div class="work-slide" data-index="1">
+      <a href="gallery/subscription-trap/index.html" class="work-slide" data-index="1" aria-label="View Subscription Trap project" aria-hidden="true" tabindex="-1">
         <div class="works-indicator">
           <span class="label">Selected Works</span>
           <div class="works-counter">
@@ -622,12 +638,12 @@
             <p><strong>Role:</strong> <span>Game designer &amp; developer</span></p>
             <p><strong>Tools:</strong> <span>HTML, CSS, JS</span></p>
           </div>
-          <a href="gallery/subscription-trap/index.html" class="slide-link">View Detail →</a>
+          <span class="slide-link">View Detail →</span>
         </div>
-      </div>
+      </a>
 
       <!-- Slide 3: Henc -->
-      <div class="work-slide" data-index="2">
+      <a href="gallery/henc/index.html" class="work-slide" data-index="2" aria-label="View Henc project" aria-hidden="true" tabindex="-1">
         <div class="works-indicator">
           <span class="label">Selected Works</span>
           <div class="works-counter">
@@ -653,9 +669,9 @@
             <p><strong>Role:</strong> <span>Lead Designer</span></p>
             <p><strong>Tools:</strong> <span>Illustrator, Indesign, Photoshop</span></p>
           </div>
-          <a href="gallery/henc/index.html" class="slide-link">View Detail →</a>
+          <span class="slide-link">View Detail →</span>
         </div>
-      </div>
+      </a>
 
     </div>
   </section>
@@ -665,7 +681,7 @@
     <a href="gallery/index.html" class="footer-link">View All Works →</a>
   </footer>
 
-  <script src="js/script.js?v=12"></script>
+  <script src="js/script.js?v=14"></script>
 
 </body>
 </html>

@@ -15,6 +15,7 @@
     ? document.currentScript.src
     : new URL('js/page-transition.js', window.location.href).href;
   const loaderUrl = new URL('portfolio-intro-loader.js?v=18', scriptUrl).href;
+  const resumeDropUrl = new URL('resume-drop.js?v=7', scriptUrl).href;
   const root = document.documentElement;
   let loaderPromise = null;
 
@@ -170,7 +171,6 @@
       if (link.hasAttribute('download')) return false;
       if (link.target && link.target.toLowerCase() !== '_self') return false;
       if (link.dataset.noTransition !== undefined) return false;
-      if (link.matches('.project-nav-prev, .project-nav-next')) return false;
 
       const rawHref = link.getAttribute('href');
       if (!rawHref || rawHref.startsWith('#')) return false;
@@ -181,6 +181,8 @@
       catch (error) { return false; }
 
       if (destination.origin !== window.location.origin) return false;
+      const destinationIsResume = /\/resume(?:\/|$)/i.test(destination.pathname);
+      if (destinationIsResume) return false;
       if (
         destination.pathname === window.location.pathname &&
         destination.search === window.location.search
@@ -245,7 +247,7 @@
 
       loadLoader().then((loader) => {
         loader.play({
-          label,
+          label: 'PAGE',
           duration: TRANSITION_DURATION,
           hold: COVER_HOLD,
           coverOnly: true,
@@ -253,7 +255,7 @@
           onCovered: () => {
             const destination = new URL(url, window.location.href);
             storageSet({
-              destinationLabel: label,
+              destinationLabel: 'PAGE',
               destinationPath: `${destination.pathname}${destination.search}`,
               historyBack: Boolean(options.historyBack),
               createdAt: Date.now(),
@@ -277,7 +279,7 @@
 
       loadLoader().then((loader) => {
         loader.play({
-          label: state.destinationLabel || labelFromPath(window.location.pathname),
+          label: 'PAGE',
           revealOnly: true,
           hold: 80,
           exitDuration: ARRIVAL_DISSOLVE_DURATION,
@@ -307,6 +309,13 @@
   }
 
   function boot() {
+    if (!document.querySelector('script[data-resume-drop]')) {
+      const resumeDropScript = document.createElement('script');
+      resumeDropScript.src = resumeDropUrl;
+      resumeDropScript.dataset.resumeDrop = '';
+      document.head.appendChild(resumeDropScript);
+    }
+
     const transition = new PageTransition();
     transition.init();
     window.pageTransition = transition;

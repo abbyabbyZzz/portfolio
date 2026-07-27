@@ -91,6 +91,8 @@ function initSelectedWorks() {
       currentIndex = index;
       slides.forEach((slide, i) => {
         slide.classList.toggle('active', i === index);
+        slide.tabIndex = i === index ? 0 : -1;
+        slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
       });
 
       if (progressFill) {
@@ -111,6 +113,8 @@ function initSelectedWorks() {
       currentIndex = index;
       slides.forEach((slide, i) => {
         slide.classList.toggle('active', i === index);
+        slide.tabIndex = i === index ? 0 : -1;
+        slide.setAttribute('aria-hidden', i === index ? 'false' : 'true');
       });
 
       if (progressFill) {
@@ -281,11 +285,13 @@ function initCarousels() {
   const carousels = document.querySelectorAll('.slide-visual.carousel');
   carousels.forEach((carousel) => {
     const items = carousel.querySelectorAll('.carousel-item');
-    if (items.length <= 1) return;
+    const slide = carousel.closest('.work-slide');
+    if (items.length <= 1 || !slide) return;
 
     let current = 0;
     let interval = null;
     const delay = parseInt(carousel.dataset.autoplay, 10) || 2000;
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
 
     function show(index) {
       items.forEach((item, i) => item.classList.toggle('active', i === index));
@@ -296,14 +302,21 @@ function initCarousels() {
       show((current + 1) % items.length);
     }
 
-    carousel.addEventListener('mouseenter', () => {
+    function start() {
+      if (!canHover.matches || interval) return;
       interval = setInterval(next, delay);
-    });
+    }
 
-    carousel.addEventListener('mouseleave', () => {
+    function stop() {
       clearInterval(interval);
       interval = null;
-    });
+      show(0);
+    }
+
+    slide.addEventListener('mouseenter', start);
+    slide.addEventListener('mouseleave', stop);
+    slide.addEventListener('focus', start);
+    slide.addEventListener('blur', stop);
   });
 }
 
@@ -431,8 +444,8 @@ function initProjectNav() {
   const nav = document.createElement('nav');
   nav.className = 'project-nav-footer';
   nav.innerHTML = `
-    <a href="../${prev.slug}/index.html" class="project-nav-prev" data-no-transition>← ${prev.name}</a>
-    <a href="../${next.slug}/index.html" class="project-nav-next" data-no-transition>${next.name} →</a>
+    <a href="../${prev.slug}/index.html" class="project-nav-prev">← ${prev.name}</a>
+    <a href="../${next.slug}/index.html" class="project-nav-next">${next.name} →</a>
   `;
 
   detailLeft.appendChild(nav);

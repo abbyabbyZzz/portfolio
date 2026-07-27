@@ -1,0 +1,289 @@
+/* Resume document modal — loaded by resume-drop.js on every portfolio page. */
+
+html.resume-drop-open,
+html.resume-drop-open body {
+  overflow: hidden;
+}
+
+.resume-drop {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 320ms ease, visibility 0s linear 900ms;
+}
+
+.resume-drop.is-open {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 260ms ease, visibility 0s;
+}
+
+.resume-drop.is-closing {
+  visibility: visible;
+  opacity: 1;
+  transition: none;
+}
+
+.resume-drop:focus {
+  outline: none;
+}
+
+.resume-drop__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.08), transparent 42%),
+    rgba(8, 8, 8, 0.46);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  cursor: zoom-out;
+  opacity: 1;
+  transition: opacity 480ms ease;
+}
+
+.resume-drop.is-closing .resume-drop__backdrop {
+  opacity: 0;
+}
+
+.resume-drop__stage {
+  position: relative;
+  width: min(52.5rem, calc(100vw - clamp(2rem, 8vw, 6rem)));
+  height: min(88dvh, 70rem);
+  perspective: 1800px;
+  pointer-events: none;
+}
+
+.resume-drop__paper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(10, 10, 10, 0.18);
+  background:
+    linear-gradient(105deg, rgba(0, 0, 0, 0.018), transparent 16%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), transparent 18%),
+    #fff;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.14),
+    0 24px 64px rgba(0, 0, 0, 0.34);
+  transform-origin: 50% 0;
+  pointer-events: auto;
+  backface-visibility: hidden;
+  will-change: transform, opacity, filter, box-shadow;
+}
+
+.resume-drop.is-open .resume-drop__paper {
+  animation: resume-paper-fall 920ms cubic-bezier(0.18, 0.74, 0.2, 1) both;
+}
+
+.resume-drop.is-closing .resume-drop__paper {
+  animation: resume-paper-leave 620ms cubic-bezier(0.55, 0.02, 0.76, 0.34) both;
+}
+
+.resume-drop__paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.16), transparent 24%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.035), transparent 9%);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.resume-drop__frame {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.resume-drop__paper.is-loaded .resume-drop__frame {
+  opacity: 1;
+}
+
+.resume-drop__loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #777;
+  background: #fff;
+  font: 500 0.72rem/1 var(--font-mono, monospace);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.resume-drop__paper.is-loaded .resume-drop__loading {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 160ms ease, visibility 0s linear 160ms;
+}
+
+.resume-drop__close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: #0a0a0a;
+  background: transparent;
+  box-shadow: none;
+  font-size: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  transform-origin: center;
+  transition: transform 300ms cubic-bezier(0.34, 1.35, 0.64, 1);
+}
+
+.resume-drop__close::before,
+.resume-drop__close::after {
+  content: "";
+  position: absolute;
+  width: 1rem;
+  height: 1px;
+  background: currentColor;
+}
+
+.resume-drop__close::before {
+  transform: rotate(45deg);
+}
+
+.resume-drop__close::after {
+  transform: rotate(-45deg);
+}
+
+.resume-drop__close:hover {
+  background: transparent;
+  transform: rotate(90deg);
+}
+
+.resume-drop.is-closing .resume-drop__close {
+  opacity: 0;
+  transform: rotate(45deg) scale(0.65);
+  transition:
+    opacity 180ms ease,
+    transform 260ms cubic-bezier(0.4, 0, 1, 1);
+}
+
+.resume-drop__close:focus-visible {
+  outline: 1px solid #0a0a0a;
+  outline-offset: 1px;
+}
+
+@keyframes resume-paper-fall {
+  0% {
+    opacity: 0.9;
+    filter: blur(2.5px);
+    transform:
+      translate3d(-1.2vw, -112vh, 0)
+      rotateZ(-3.2deg)
+      rotateX(4deg)
+      scale(0.985);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  }
+  64% {
+    opacity: 1;
+    filter: blur(0);
+    transform:
+      translate3d(0.18vw, 1.1rem, 0)
+      rotateZ(0.65deg)
+      rotateX(0)
+      scale(1);
+    box-shadow:
+      0 4px 7px rgba(0, 0, 0, 0.16),
+      0 30px 72px rgba(0, 0, 0, 0.38);
+  }
+  81% {
+    transform: translate3d(-0.08vw, -0.35rem, 0) rotateZ(-0.22deg);
+  }
+  92% {
+    transform: translate3d(0.03vw, 0.12rem, 0) rotateZ(0.08deg);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) rotateZ(0);
+    box-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.14),
+      0 24px 64px rgba(0, 0, 0, 0.34);
+  }
+}
+
+@keyframes resume-paper-leave {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, 0, 0) rotateZ(0) scale(1);
+  }
+  20% {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate3d(0, -0.65rem, 0) rotateZ(-0.28deg) scale(1.002);
+  }
+  100% {
+    opacity: 0.86;
+    filter: blur(2px);
+    transform: translate3d(1.5vw, 112vh, 0) rotateZ(3.4deg) scale(0.985);
+  }
+}
+
+@media (max-width: 600px) {
+  .resume-drop {
+    padding: 0.75rem;
+  }
+
+  .resume-drop__stage {
+    width: calc(100vw - 1.5rem);
+    height: min(88dvh, 50rem);
+  }
+
+  .resume-drop__close {
+    top: 0.65rem;
+    right: 0.65rem;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resume-drop,
+  .resume-drop.is-open,
+  .resume-drop.is-closing,
+  .resume-drop__backdrop,
+  .resume-drop.is-closing .resume-drop__close {
+    transition-duration: 1ms;
+  }
+
+  .resume-drop.is-open .resume-drop__paper,
+  .resume-drop.is-closing .resume-drop__paper {
+    animation: none;
+  }
+
+  .resume-drop__close:hover {
+    transform: none;
+  }
+
+  .resume-drop__close {
+    transition: none;
+  }
+}
