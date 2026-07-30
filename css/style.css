@@ -296,6 +296,9 @@ html.homepage-entrance-pending [data-intro-module] {
   visibility: hidden;
 }
 
+html.homepage-entrance-pending .site-nav,
+html.homepage-entrance-pending .bento-container,
+html.homepage-entrance-pending .bento-cell,
 html.homepage-entrance-active .site-nav,
 html.homepage-entrance-active .bento-container,
 html.homepage-entrance-active .bento-cell {
