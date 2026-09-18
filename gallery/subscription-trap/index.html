@@ -23,6 +23,11 @@
     .wireframe-plain img { width: 100%; height: auto; display: block; }
     .wireframe-plain figcaption { display: flex; flex-direction: column; gap: 0.25rem; }
     .wireframe-card p, .wireframe-plain p { font-size: 0.85rem; color: #666; }
+    .gameplay-section .process-heading { margin-bottom: 2rem; }
+    .gameplay-gallery { display: flex; flex-direction: column; gap: 2rem; }
+    .gameplay-item { margin: 0; }
+    .gameplay-item img { display: block; width: 100%; height: auto; }
+    .gameplay-item .caption { margin: 0.65rem 0 0; }
     .mkt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
     .mkt-grid img { width: 100%; height: auto; }
     .future-list { padding-left: 1.5rem; list-style: disc; margin-bottom: 1rem; }
@@ -98,6 +103,36 @@
               <p class="caption small text-muted">wire frame of other pages</p>
             </figcaption>
           </figure>
+        </section>
+
+        <section class="process-section gameplay-section mb-5">
+          <h3 class="process-heading">Gameplay</h3>
+          <div class="gameplay-gallery">
+            <figure class="gameplay-item">
+              <img src="../../img/subscription-trap/game-play-1.gif" class="img-fluid w-100" alt="Subscription Trap opening gameplay sequence">
+              <figcaption class="caption small text-muted">The opening sequence introduces the challenge and guides players into the subscription trap.</figcaption>
+            </figure>
+            <figure class="gameplay-item">
+              <img src="../../img/subscription-trap/game-play-cat.gif" class="img-fluid w-100" alt="A deceptive cat pop-up interrupts the game">
+              <figcaption class="caption small text-muted">A deceptive cat pop-up interrupts the cancellation process and distracts players from their goal.</figcaption>
+            </figure>
+            <figure class="gameplay-item">
+              <img src="../../img/subscription-trap/game-play-2.gif" class="img-fluid w-100" alt="Player searches for the subscription management link">
+              <figcaption class="caption small text-muted">Players must find the subtly hidden “manage subscription” link before the countdown ends.</figcaption>
+            </figure>
+            <figure class="gameplay-item">
+              <img src="../../img/subscription-trap/game-play-customer-support.gif" class="img-fluid w-100" alt="Customer support FAQ in Subscription Trap">
+              <figcaption class="caption small text-muted">The customer support page buries cancellation help inside a layered FAQ interface.</figcaption>
+            </figure>
+            <figure class="gameplay-item">
+              <img src="../../img/subscription-trap/game-play-3.gif" class="img-fluid w-100" alt="Account preferences and promotional notifications obscure cancellation settings">
+              <figcaption class="caption small text-muted">Cancellation controls are hidden among extensive account preferences while promotional notifications create additional distraction.</figcaption>
+            </figure>
+            <figure class="gameplay-item">
+              <img src="../../img/subscription-trap/game-play-4.gif" class="img-fluid w-100" alt="Subscription retention pop-up pressures the player to stay">
+              <figcaption class="caption small text-muted">Confirm-shaming language and repeated prompts pressure players to keep their membership.</figcaption>
+            </figure>
+          </div>
         </section>
 
         <section class="process-section mb-5">
