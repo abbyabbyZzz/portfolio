@@ -1,0 +1,12 @@
+/* Static-site adapter for React Bits AnimatedContent (JS + CSS variant). */
+html.has-animated-work-content .project-detail-page .detail-left > :is(.hero, .process-section) > * {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-animated-work-content .project-detail-page .detail-left > :is(.hero, .process-section) > * {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
