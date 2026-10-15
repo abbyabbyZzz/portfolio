@@ -20,3 +20,6 @@ dist/
 # Local env
 .env
 .env.local
+
+# Private, local-only CMS (program, drafts, previews and backups)
+/local-cms/

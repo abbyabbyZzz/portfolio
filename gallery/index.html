@@ -10,15 +10,19 @@
     crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.typekit.net/kbe6evn.css">
   <link rel="stylesheet" href="../css/style.css?v=36">
-    <script src="../js/page-transition.js?v=10"></script>
+    <link rel="stylesheet" href="../css/work-transition.css?v=6">
+  <script src="../js/work-transition.js?v=7"></script>
+  <script src="../js/page-transition.js?v=10"></script>
     <script defer src="../js/animated-nav.js?v=1"></script>
     <title>Abby's Gallery</title>
   <style>
     /* ===== Gallery Page Specific Styles ===== */
     body { font-size: 0.95rem; }
     a { color: inherit; text-decoration: none; font-weight: inherit; }
-    .reveal-row { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal-row.in-view { opacity: 1; transform: translateY(0); }
+    /* Keep entrance and elastic scroll transforms on separate elements. */
+    .gallery-ready .reveal-row .project-card { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .gallery-ready .reveal-row.in-view .project-card,
+    .gallery-ready .reveal-row:focus-within .project-card { opacity: 1; transform: translateY(0); }
     .portfolio-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .tag-btn { position: relative; background: transparent; border: none; font-size: 1rem; padding: 0.4rem 1rem; text-transform: lowercase; cursor: pointer; color: var(--fg); z-index: 1; overflow: hidden; }
     .tag-btn::before { content: ''; position: absolute; inset: 0; background: var(--fg); transform: scaleY(0); transform-origin: top; transition: transform 0.35s ease; z-index: -1; }
@@ -40,11 +44,19 @@
     .overlay-prev { left: 1rem; }
     .overlay-next { right: 1rem; }
     @media (max-width: 767.98px) { .project-card { border-radius: 6px; } }
-    .masonry-container { position: relative; width: 100%; }
-    .masonry-item { margin-bottom: 1.5rem; width: 100%; }
+    .masonry-container { --gallery-columns: 1; position: relative; width: 100%; display: grid; grid-template-columns: repeat(var(--gallery-columns), minmax(0, 1fr)); gap: 1.5rem; align-items: start; overflow: clip; }
+    .masonry-container.is-positioned { display: block; }
+    .masonry-item { width: 100%; transform: translate3d(0, var(--elastic-y, 0px), 0); }
+    .masonry-container.is-elastic .masonry-item { will-change: transform; }
     .masonry-item.d-none { display: none !important; }
-    @media (min-width: 768px) { .masonry-item { width: calc(50% - 0.75rem); } }
-    @media (min-width: 992px) { .masonry-item { width: calc(33.333% - 1rem); } }
+    @media (min-width: 768px) { .masonry-container { --gallery-columns: 2; } }
+    @media (min-width: 992px) { .masonry-container { --gallery-columns: 3; } }
+    @media (prefers-reduced-motion: reduce) {
+      .masonry-item { transform: none; }
+      .gallery-ready .reveal-row .project-card { opacity: 1; transform: none; transition: none; }
+      .project-thumb img, .tag-btn::before, .img-overlay { transition: none; }
+      .project-card:hover .project-thumb img { transform: none; }
+    }
     .portfolio-page { padding: 1.5rem; }
     @media (min-width: 768px) { .portfolio-page { padding: 1.5rem 2rem; } }
   </style>
@@ -406,6 +418,6 @@
   });
 </script>
 
-<script src="js/script.js?v=8"></script>
+<script src="js/script.js?v=10"></script>
 </body>
 </html>

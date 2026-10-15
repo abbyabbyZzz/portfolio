@@ -1,0 +1,64 @@
+/* Gallery → work: repeating covers, followed by the real detail media. */
+html.is-work-leaving,
+html.is-work-arriving {
+  overflow: hidden;
+  scroll-behavior: auto;
+  background: var(--bg, #fff) !important;
+}
+
+html.is-work-leaving body,
+html.is-work-arriving body {
+  width: var(--work-layout-width, 100%);
+}
+
+html.is-work-arriving body {
+  animation: none;
+  opacity: 1;
+  pointer-events: none;
+}
+
+.work-transition {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  z-index: 10001;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+}
+
+.work-transition__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--bg, #fff);
+}
+
+.work-transition__shade {
+  position: absolute;
+  background: var(--bg, #fff);
+}
+
+.work-transition__image {
+  position: absolute;
+  display: block;
+  max-width: none;
+  margin: 0;
+  object-fit: contain;
+  object-position: center;
+  transform-origin: center;
+}
+
+html.is-work-leaving body {
+  pointer-events: none;
+}
+
+/* Freeze the thumbnail hover while its copy takes over. */
+html.is-work-leaving .project-thumb img {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-transition {
+    display: none;
+  }
+}

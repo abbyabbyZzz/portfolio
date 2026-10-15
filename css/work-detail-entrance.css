@@ -1,0 +1,47 @@
+/* Effect 3 reveals characters in their original text positions. */
+html.has-work-detail-entrance body {
+  animation: none;
+  opacity: 1;
+}
+
+html.work-detail-entrance-pending .project-detail-page .detail-panel :is(
+  .detail-panel > :first-child,
+  .detail-title,
+  .detail-subtitle,
+  .detail-meta-row,
+  .detail-toggle,
+  .detail-body > p,
+  .detail-body > ul,
+  .detail-body > ol
+),
+.project-detail-page .detail-panel [data-work-reveal="pending"] {
+  opacity: 0;
+}
+
+.work-shuffle-mask {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+}
+
+.work-shuffle-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.work-shuffle-canvas {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-detail-page [data-work-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

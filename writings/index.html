@@ -13,16 +13,285 @@
   <script src="../js/page-transition.js?v=10"></script>
   <script defer src="../js/animated-nav.js?v=1"></script>
   <style>
-    .writings-page-wrap { padding: 1.5rem; }
-    @media (min-width: 768px) { .writings-page-wrap { padding: 1.5rem 2rem; } }
-    .portfolio-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-    .tag-btn { position: relative; background: transparent; border: none; font-size: 1rem; padding: 0.4rem 1rem; text-transform: lowercase; cursor: pointer; color: var(--fg); z-index: 1; overflow: hidden; }
-    .tag-btn::before { content: ''; position: absolute; inset: 0; background: var(--fg); transform: scaleY(0); transform-origin: top; transition: transform 0.35s ease; z-index: -1; }
-    .tag-btn.active::before, .tag-btn:hover::before { transform: scaleY(1); }
-    .tag-btn.active, .tag-btn:hover { color: #fff; }
-    .reveal-row { opacity: 0; transform: translateY(40px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    :root { --writing-accent: var(--fg); --writing-line: var(--border); }
+    body.writings-page {
+      background-color: var(--bg);
+    }
+    .writings-page-wrap {
+      width: min(100% - 3rem, 84rem);
+      min-height: calc(100vh - 57px);
+      margin: 0 auto;
+      padding: 3.5rem 0 6rem;
+    }
+    .writing-filter-rail {
+      display: flex;
+      align-items: flex-end;
+      border-bottom: 1px solid var(--writing-accent);
+    }
+    .portfolio-tags { display: flex; flex-wrap: wrap; align-items: flex-end; }
+    .tag-btn {
+      min-height: 28px;
+      margin: 0 -1px -1px 0;
+      padding: 0.25rem 0.9rem;
+      border: 1px solid var(--writing-accent);
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.94);
+      color: var(--writing-accent);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      line-height: 1;
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: background 180ms ease, color 180ms ease;
+    }
+    .tag-btn:hover,
+    .tag-btn.active {
+      background: var(--writing-accent);
+      color: #fff;
+    }
+    .writings-grid {
+      display: block;
+      padding: 3.5rem 0 0;
+    }
+    .article-row {
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 12rem minmax(0, 1fr) 5.5rem;
+      min-height: 4.8rem;
+      margin-bottom: 0.65rem;
+      border: 1px solid var(--writing-line);
+      background: rgba(250, 249, 248, 0.92);
+      color: #171717;
+      font-family: var(--font-mono);
+      text-decoration: none;
+      transition: border-color 180ms ease, color 250ms ease;
+    }
+    .article-row::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: var(--writing-accent);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 420ms cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .article-row:hover,
+    .article-row:focus-visible {
+      border-color: var(--writing-accent);
+      color: #fff;
+      text-decoration: none;
+      outline: none;
+    }
+    .article-row:hover::before,
+    .article-row:focus-visible::before { transform: scaleX(1); }
+    .article-row-date,
+    .article-row-title,
+    .article-row-read {
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .article-row-date {
+      justify-content: center;
+      padding: 1rem 1.35rem;
+      border-right: 1px solid var(--writing-line);
+      font-size: 0.86rem;
+      white-space: nowrap;
+      transition: color 250ms ease, border-color 250ms ease;
+    }
+    .article-row-title {
+      margin: 0;
+      padding: 1rem 5.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      font-weight: 400;
+      line-height: 1.45;
+      position: relative;
+      z-index: 1;
+    }
+    .article-row-read {
+      justify-content: center;
+      border-left: 1px solid var(--writing-line);
+      color: var(--writing-accent);
+      transition: color 250ms ease, border-color 250ms ease;
+    }
+    .article-row:hover .article-row-date,
+    .article-row:focus-visible .article-row-date,
+    .article-row:hover .article-row-read,
+    .article-row:focus-visible .article-row-read {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+    .article-row:hover .article-row-read,
+    .article-row:focus-visible .article-row-read { color: #fff; }
+    .article-row-read svg {
+      width: 2.15rem;
+      height: 2.15rem;
+      transition: transform 220ms ease;
+    }
+    .article-row:hover .article-row-read svg,
+    .article-row:focus-visible .article-row-read svg { transform: rotate(-7deg) scale(1.08); }
+    .reveal-row { opacity: 0; transform: translateY(18px); transition: opacity 0.55s ease, transform 0.55s ease; }
     .reveal-row.in-view { opacity: 1; transform: translateY(0); }
-    .article-card:hover .article-card-title { text-decoration: underline; }
+    .writings-grid-empty {
+      padding: 5rem 1rem;
+      border: 1px solid var(--writing-line);
+      background: rgba(250, 249, 248, 0.92);
+      color: #666;
+      font-family: var(--font-mono);
+      text-align: center;
+    }
+    .writing-tooltip {
+      --tooltip-columns: 12;
+      --tooltip-rows: 9;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      width: min(340px, calc(100vw - 2rem));
+      height: 340px;
+      overflow: visible;
+      pointer-events: none;
+      visibility: hidden;
+      opacity: 0;
+      color: #fff;
+      transform: translate3d(-100vw, -100vh, 0);
+      transition: opacity 120ms ease, visibility 0s linear 360ms;
+    }
+    .writing-tooltip.is-visible {
+      visibility: visible;
+      opacity: 1;
+      transition-delay: 0s;
+    }
+    .writing-tooltip__bg {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: repeat(var(--tooltip-columns), 1fr);
+      grid-template-rows: repeat(var(--tooltip-rows), 1fr);
+      filter: url(#writing-tooltip-gooey);
+    }
+    .writing-tooltip__cell {
+      background: #0a0a0a;
+      outline: 1px solid #0a0a0a;
+      opacity: 0;
+      transform: scale(0.28);
+      transition:
+        opacity 240ms ease var(--cell-delay, 0ms),
+        transform 520ms cubic-bezier(0.16, 1, 0.3, 1) var(--cell-delay, 0ms);
+    }
+    .writing-tooltip.is-visible .writing-tooltip__cell {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .writing-tooltip__content {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: 195px 1fr;
+      gap: 0.9rem;
+      padding: 0.75rem;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 260ms ease;
+    }
+    .writing-tooltip.is-visible .writing-tooltip__content {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 260ms;
+    }
+    .writing-tooltip__image-wrap {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.36);
+      background: #1a1a1a;
+    }
+    .writing-tooltip__image-wrap::after {
+      content: 'IMAGE PREVIEW';
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      opacity: 0;
+    }
+    .writing-tooltip.is-image-missing .writing-tooltip__image-wrap::after { opacity: 1; }
+    .writing-tooltip__image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.02);
+    }
+    .writing-tooltip.is-image-missing .writing-tooltip__image { opacity: 0; }
+    .writing-tooltip__copy {
+      display: flex;
+      min-height: 0;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0 0.25rem 0.15rem;
+    }
+    .writing-tooltip__meta {
+      margin: 0 0 0.55rem;
+      color: rgba(255, 255, 255, 0.64);
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .writing-tooltip__description {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+    @media (max-width: 768px) {
+      .writings-page-wrap { width: min(100% - 2rem, 84rem); padding-top: 2rem; }
+      .writing-filter-rail { overflow-x: auto; }
+      .portfolio-tags { flex-wrap: nowrap; }
+      .tag-btn { flex: 0 0 auto; }
+      .writings-grid { padding-top: 2rem; }
+      .article-row { grid-template-columns: minmax(0, 1fr) 4rem; }
+      .article-row-date {
+        grid-column: 1;
+        grid-row: 1;
+        justify-content: flex-start;
+        padding: 0.85rem 1rem 0.2rem;
+        border-right: 0;
+        color: #666;
+        font-size: 0.7rem;
+      }
+      .article-row-title {
+        grid-column: 1;
+        grid-row: 2;
+        padding: 0.2rem 1rem 0.95rem;
+        font-size: 0.82rem;
+      }
+      .article-row-read { grid-column: 2; grid-row: 1 / span 2; }
+      .article-row-read svg { width: 1.8rem; height: 1.8rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .article-row,
+      .article-row::before,
+      .article-row-read svg,
+      .reveal-row { transition: none; }
+      .writing-tooltip,
+      .writing-tooltip__cell,
+      .writing-tooltip__content { transition: none; }
+    }
+    @media (hover: none), (pointer: coarse) {
+      .writing-tooltip { display: none; }
+    }
   </style>
 </head>
 <body class="page-enter writings-page">
@@ -38,20 +307,14 @@
     </div>
   </nav>
 
-  <!-- Masthead -->
   <div class="writings-page-wrap">
-
-    <!-- title -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h2 class="mb-0">Writings</h2>
-    </div>
-
-    <!-- Categories filter row -->
-    <div class="portfolio-tags mb-4" id="filter-buttons">
-      <button type="button" class="btn btn-sm tag-btn active" data-filter="all">all</button>
-      <button type="button" class="btn btn-sm tag-btn" data-filter="essays">essays</button>
-      <button type="button" class="btn btn-sm tag-btn" data-filter="journals">journals</button>
-      <button type="button" class="btn btn-sm tag-btn" data-filter="notes">notes</button>
+    <div class="writing-filter-rail" aria-label="Filter writings by category">
+      <div class="portfolio-tags" id="filter-buttons">
+        <button type="button" class="tag-btn active" data-filter="all">all</button>
+        <button type="button" class="tag-btn" data-filter="essays">essays</button>
+        <button type="button" class="tag-btn" data-filter="journals">journals</button>
+        <button type="button" class="tag-btn" data-filter="notes">notes</button>
+      </div>
     </div>
 
     <!-- Article grid -->
@@ -61,6 +324,30 @@
 
   </div>
 
+  <!-- Segmented tooltip interaction inspired by Codrops PixelGooeyTooltip (MIT). -->
+  <div class="writing-tooltip" id="writing-tooltip" role="tooltip" aria-hidden="true">
+    <div class="writing-tooltip__bg" aria-hidden="true"></div>
+    <div class="writing-tooltip__content">
+      <div class="writing-tooltip__image-wrap">
+        <img class="writing-tooltip__image" src="" alt="" referrerpolicy="no-referrer">
+      </div>
+      <div class="writing-tooltip__copy">
+        <p class="writing-tooltip__meta"></p>
+        <p class="writing-tooltip__description"></p>
+      </div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <defs>
+      <filter id="writing-tooltip-gooey" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="4.2"></feGaussianBlur>
+        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -7" result="goo"></feColorMatrix>
+        <feComposite in="SourceGraphic" in2="goo" operator="atop"></feComposite>
+      </filter>
+    </defs>
+  </svg>
+
   <script>
     // Article data
     const writings = [
@@ -68,7 +355,7 @@
         slug: "virtual-exhibition",
         title: "Rethinking Virtual Exhibitions as Spatial Systems",
         category: "essays",
-        date: "April 10 2026",
+        date: "2026-04-10",
         cover: "https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         excerpt: "Exploring how virtual exhibitions transform information into navigable spatial experiences."
       },
@@ -76,7 +363,7 @@
         slug: "buying-to-feel",
         title: "Buying to Feel: Emotional Consumerism Among Female University Students in Digital Spaces",
         category: "essays",
-        date: "March 9 2026",
+        date: "2026-03-09",
         cover: "https://images.unsplash.com/photo-1763872038252-e6c4e0a11067?q=80&w=2074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         excerpt: "Digital platforms turn stress and insecurity into shopping habits by wrapping consumption in the language of self-care."
       }, 
@@ -84,7 +371,7 @@
         slug: "papers-please",
         title: "Papers Please Play Journal",
         category: "journals",
-        date: "May-June 2025",
+        date: "2025-05—06",
         cover: "https://miro.medium.com/1*Wto643yG6HgprZfAafHPdQ.jpeg",
         excerpt: "A personal record of thoughts while playing Papers, Please."
       },
@@ -92,7 +379,7 @@
         slug: "sick-cute-and-pain",
         title: "Sick-Cute and Pain: The Fetishization of Female Self-Harm in Needy Streamer Overload",
         category: "essays",
-        date: "March 19 2025",
+        date: "2025-03-19",
         cover: "https://nintendoeverything.com/wp-content/uploads/Needy-Girl-Overdose-physical.jpg",
         excerpt: "How Needy Streamer Overload uses cute aesthetics to commodify female pain."
       },
@@ -100,31 +387,107 @@
         slug: "the-world-of-visual-novels",
         title: "Paths of Memory and Discovery: The World of Visual Novels",
         category: "journals",
-        date: "February 27 2025",
+        date: "2025-02-27",
         cover: "https://images.unsplash.com/photo-1613487957484-32c977a8bd62?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        excerpt: "Examines 10 Japanese visual novels from year 1997 to 2007 crossing animation, gaming, and interactive fiction from their interactivity and branching narratives that illustrate personal identity, memory, and emotional growth."
+        excerpt: "A journey through Japanese visual novels and the branching narratives that connect memory, identity, and emotional discovery."
       },
       {
         slug: "laura-mulvey",
         title: "Visual Pleasure and Narrative Cinema Article Analysis",
         category: "notes",
-        date: "April 8 2024",
+        date: "2024-04-08",
         cover: "https://m.media-amazon.com/images/I/61H0PR5S3nL._AC_UF1000,1000_QL80_.jpg",
-        excerpt: " "
+        excerpt: "A close reading of Laura Mulvey’s theory of the male gaze and its influence on visual pleasure and narrative cinema."
       }
       
     ];
 
-    const CATEGORY_LABELS = {
-      essays: "essays",
-      journals: "journals",
-      notes: "notes"
-    };
-
     let activeFilter = "all";
+    const isLocalFilePreview = window.location.protocol === "file:";
+
+    const playIcon = `
+      <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <circle cx="24" cy="24" r="15.5" stroke="currentColor" stroke-width="1.5" />
+        <path d="M20.5 16.5L32 24L20.5 31.5V16.5Z" fill="currentColor" />
+      </svg>`;
+
+    const tooltip = document.getElementById("writing-tooltip");
+    const tooltipBg = tooltip.querySelector(".writing-tooltip__bg");
+    const tooltipImage = tooltip.querySelector(".writing-tooltip__image");
+    const tooltipMeta = tooltip.querySelector(".writing-tooltip__meta");
+    const tooltipDescription = tooltip.querySelector(".writing-tooltip__description");
+    const tooltipPointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const tooltipCellCount = 108;
+    let activeTooltipRow = null;
+
+    tooltipBg.innerHTML = Array.from({ length: tooltipCellCount }, (_, index) =>
+      `<span class="writing-tooltip__cell" style="--cell-delay:${((index * 29) % tooltipCellCount) * 2}ms"></span>`
+    ).join("");
+    tooltipImage.addEventListener("load", () => tooltip.classList.remove("is-image-missing"));
+    tooltipImage.addEventListener("error", () => tooltip.classList.add("is-image-missing"));
+
+    function positionWritingTooltip(clientX, clientY) {
+      const padding = 16;
+      const offset = 22;
+      const width = tooltip.offsetWidth;
+      const height = tooltip.offsetHeight;
+      let left = clientX + offset;
+      let top = clientY + offset;
+
+      if (left + width > window.innerWidth - padding) left = clientX - width - offset;
+      if (top + height > window.innerHeight - padding) top = clientY - height - offset;
+
+      left = Math.max(padding, Math.min(left, window.innerWidth - width - padding));
+      top = Math.max(padding, Math.min(top, window.innerHeight - height - padding));
+      tooltip.style.transform = `translate3d(${left}px, ${top}px, 0)`;
+    }
+
+    function showWritingTooltip(row, clientX, clientY) {
+      if (!tooltipPointerQuery.matches) return;
+      const writing = writings[Number(row.dataset.writingIndex)];
+      if (!writing) return;
+
+      activeTooltipRow = row;
+      tooltip.classList.remove("is-visible");
+      tooltipImage.src = writing.cover;
+      tooltipImage.alt = `${writing.title} cover`;
+      tooltipMeta.textContent = `${writing.category} / ${writing.date}`;
+      tooltipDescription.textContent = writing.excerpt;
+      tooltip.setAttribute("aria-hidden", "false");
+      positionWritingTooltip(clientX, clientY);
+
+      requestAnimationFrame(() => {
+        if (activeTooltipRow === row) tooltip.classList.add("is-visible");
+      });
+    }
+
+    function hideWritingTooltip(row) {
+      if (row && activeTooltipRow !== row) return;
+      activeTooltipRow = null;
+      tooltip.classList.remove("is-visible");
+      tooltip.setAttribute("aria-hidden", "true");
+    }
+
+    function bindWritingTooltips() {
+      document.querySelectorAll(".article-row").forEach(row => {
+        row.addEventListener("mouseenter", event => {
+          showWritingTooltip(row, event.clientX, event.clientY);
+        });
+        row.addEventListener("mousemove", event => {
+          if (activeTooltipRow === row) positionWritingTooltip(event.clientX, event.clientY);
+        });
+        row.addEventListener("mouseleave", () => hideWritingTooltip(row));
+        row.addEventListener("focus", () => {
+          const rect = row.getBoundingClientRect();
+          showWritingTooltip(row, rect.right - 20, rect.top + rect.height / 2);
+        });
+        row.addEventListener("blur", () => hideWritingTooltip(row));
+      });
+    }
 
     function renderGrid() {
       const grid = document.getElementById("writings-grid");
+      hideWritingTooltip();
       const filtered = activeFilter === "all"
         ? writings
         : writings.filter(w => w.category === activeFilter);
@@ -134,19 +497,14 @@
         return;
       }
 
-      grid.innerHTML = filtered.map((w, i) => `
-        <a href="${w.slug}/" class="article-card reveal-row" style="view-transition-name: article-${w.slug}">
-          <div class="article-card-image-wrap">
-            <img src="${w.cover}" alt="${w.title}" loading="${i < 3 ? 'eager' : 'lazy'}">
-          </div>
-          <div class="article-card-meta">
-            <span class="label">${w.date}</span>
-            <h2 class="article-card-title">${w.title}</h2>
-            <p class="article-card-excerpt">${w.excerpt}</p>
-          </div>
+      grid.innerHTML = filtered.map(w => `
+        <a href="${w.slug}/index.html" class="article-row reveal-row" data-writing-index="${writings.indexOf(w)}" style="view-transition-name: article-${w.slug}" aria-label="Read ${w.title}"${isLocalFilePreview ? ' data-no-transition' : ''}>
+          <time class="article-row-date">${w.date}</time>
+          <h2 class="article-row-title">${w.title}</h2>
+          <span class="article-row-read" aria-hidden="true">${playIcon}</span>
         </a>
       `).join("");
-
+      bindWritingTooltips();
     }
 
     function observeCards() {

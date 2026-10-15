@@ -1,191 +1,192 @@
-/* === Scroll reveal entire rows === */
-const revealRows = document.querySelectorAll('.reveal-row');
+/* Gallery masonry and elastic column scroll.
+ * Motion reference: https://github.com/codrops/ElasticGridScroll (Demo 1).
+ * Native-scroll implementation: keep the original DOM / keyboard reading order
+ * and fixed navigation / image overlays outside the animated elements.
+ */
+(function () {
+  'use strict';
 
-if (revealRows.length > 0 && 'IntersectionObserver' in window) {
-  const rowObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('in-view');
-        rowObserver.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.2
-  });
-
-  revealRows.forEach(row => rowObserver.observe(row));
-
-} else {
-  revealRows.forEach(row => row.classList.add('in-view'));
-}
-
-// ==== Masonry Layout Function ==== //
-function initMasonry() {
   const container = document.querySelector('.masonry-container');
   if (!container) return;
 
-  const items = Array.from(container.querySelectorAll('.masonry-item:not(.d-none)'));
-  if (items.length === 0) return;
+  const items = Array.from(container.querySelectorAll('.masonry-item'));
+  const buttons = document.querySelectorAll('.tag-btn');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktopMotion = window.matchMedia('(min-width: 768px) and (hover: hover) and (pointer: fine)');
+  let columns = [];
+  let motionFrame = 0;
+  let layoutFrame = 0;
+  let previousTime = 0;
+  let maxScroll = 0;
+  let motionEnabled = false;
 
-  // 清除旧的 spacer
-  container.querySelectorAll('.masonry-spacer').forEach(el => el.remove());
+  // Animate only the cards; the outer masonry items are reserved for scroll lag.
+  const rowObserver = 'IntersectionObserver' in window
+    ? new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        rowObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.05, rootMargin: '80px 0px' })
+    : null;
 
-  // 清除之前的定位
   items.forEach(item => {
-    item.style.position = '';
-    item.style.top = '';
-    item.style.left = '';
+    if (rowObserver) rowObserver.observe(item);
+    else item.classList.add('in-view');
   });
+  container.classList.add('gallery-ready');
 
-  // 获取列数
-  let cols = 1;
-  if (window.innerWidth >= 992) cols = 3;
-  else if (window.innerWidth >= 768) cols = 2;
-
-  const gap = 1.5; // rem
-  const gap_px = gap * 16;
-  const containerWidth = container.offsetWidth;
-  const colWidth = (containerWidth - (gap_px * (cols - 1))) / cols;
-
-  // 跟踪每列的高度和包含的项目
-  const colHeights = new Array(cols).fill(0);
-  const colItems = Array.from({ length: cols }, () => []);
-
-  // 按顺序排列每个项目
-  items.forEach((item, index) => {
-    // 找到最短的列
-    const shortestCol = colHeights.indexOf(Math.min(...colHeights));
-
-    // 设置位置
-    item.style.position = 'absolute';
-    item.style.width = colWidth + 'px';
-    item.style.left = (shortestCol * (colWidth + gap_px)) + 'px';
-    item.style.top = colHeights[shortestCol] + 'px';
-
-    // 更新列高度
-    colHeights[shortestCol] += item.offsetHeight + gap_px;
-    colItems[shortestCol].push(item);
-  });
-
-  // 设置容器高度
-  const maxHeight = Math.max(...colHeights);
-  container.style.height = maxHeight + 'px';
-
-  // === 底部对齐：给较短的列添加不可见 spacer === //
-  colHeights.forEach((height, colIndex) => {
-    const diff = maxHeight - height;
-    if (diff > gap_px / 2) {
-      const spacer = document.createElement('div');
-      spacer.className = 'masonry-spacer';
-      spacer.style.position = 'absolute';
-      spacer.style.width = colWidth + 'px';
-      spacer.style.left = (colIndex * (colWidth + gap_px)) + 'px';
-      spacer.style.top = height + 'px';
-      spacer.style.height = diff + 'px';
-      spacer.style.pointerEvents = 'none';
-      spacer.style.opacity = '0';
-      container.appendChild(spacer);
-    }
-  });
-}
-
-// ==== tags filter ==== //
-const buttons = document.querySelectorAll('.tag-btn');
-const items = document.querySelectorAll('.project-card');
-
-buttons.forEach(btn => {
-  btn.addEventListener('click', () => {
-
-    // button active
-    buttons.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-
-    const filter = btn.getAttribute('data-filter');
-
-    items.forEach(item => {
-      const category = item.getAttribute('data-category');
-      const masonryItem = item.closest('.masonry-item') || item.parentElement;
-
-      if (!masonryItem) return;
-
-      if (filter === "all" || category === filter) {
-        masonryItem.classList.remove('d-none');
-      } else {
-        masonryItem.classList.add('d-none');
-      }
-    });
-
-    // 筛选后重新布局
-    setTimeout(() => {
-      initMasonry();
-    }, 50);
-  });
-});
-
-// 等待图片加载的函数
-function waitForImages(callback) {
-  const images = document.querySelectorAll('.masonry-item img');
-  if (images.length === 0) {
-    callback();
-    return;
+  function scrollPosition() {
+    // Safari's overscroll must not stretch the columns beyond the page bounds.
+    return Math.max(0, Math.min(window.scrollY, maxScroll));
   }
 
-  let loadedCount = 0;
-  const totalImages = images.length;
+  function resetMotion() {
+    cancelAnimationFrame(motionFrame);
+    motionFrame = 0;
+    previousTime = 0;
+    const position = scrollPosition();
+    columns.forEach(column => { column.position = position; });
+    items.forEach(item => item.style.removeProperty('--elastic-y'));
+  }
 
-  images.forEach(img => {
-    if (img.complete) {
-      loadedCount++;
-      if (loadedCount === totalImages) callback();
-    } else {
-      img.addEventListener('load', () => {
-        loadedCount++;
-        if (loadedCount === totalImages) callback();
-      });
-      img.addEventListener('error', () => {
-        loadedCount++;
-        if (loadedCount === totalImages) callback();
-      });
-    }
-  });
-}
+  function updateMotionPreference() {
+    motionEnabled = !reducedMotion.matches && desktopMotion.matches && columns.length > 1;
+    container.classList.toggle('is-elastic', motionEnabled);
+    resetMotion();
+  }
 
-// 初始化masonry
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    waitForImages(() => {
-      setTimeout(initMasonry, 50);
+  function animateColumns(time) {
+    const position = scrollPosition();
+    // Frame-rate independent easing also avoids a jump after a background tab.
+    const delta = previousTime ? Math.min((time - previousTime) / 1000, 0.064) : 1 / 60;
+    const maxOffset = Math.min(60, window.innerHeight * 0.07);
+    previousTime = time;
+    let moving = false;
+
+    columns.forEach(column => {
+      column.position += (position - column.position) * (1 - Math.exp(-delta / column.lag));
+      // Bound fast wheel/scrollbar jumps while preserving the soft catch-up.
+      column.position = Math.max(position - maxOffset, Math.min(position + maxOffset, column.position));
+      let offset = position - column.position;
+      if (Math.abs(offset) < 0.1) {
+        column.position = position;
+        offset = 0;
+      } else {
+        moving = true;
+      }
+      column.items.forEach(item => {
+        item.style.setProperty('--elastic-y', `${offset.toFixed(2)}px`);
+      });
+    });
+
+    motionFrame = moving ? requestAnimationFrame(animateColumns) : 0;
+    if (!moving) previousTime = 0;
+  }
+
+  function startMotion() {
+    if (!motionEnabled || motionFrame || document.hidden) return;
+    motionFrame = requestAnimationFrame(animateColumns);
+  }
+
+  function layoutMasonry() {
+    layoutFrame = 0;
+    resetMotion();
+    const visibleItems = items.filter(item => !item.hidden);
+    const styles = getComputedStyle(container);
+    const columnCount = parseInt(styles.getPropertyValue('--gallery-columns'), 10) || 1;
+    const gap = parseFloat(styles.columnGap) || 24;
+    const width = (container.clientWidth - gap * (columnCount - 1)) / columnCount;
+    const heights = Array(columnCount).fill(0);
+    const middle = (columnCount - 1) / 2;
+
+    columns = Array.from({ length: columnCount }, (_, index) => ({
+      items: [],
+      position: 0,
+      // Symmetric outer lag on desktop; alternate lag for the two-column layout.
+      lag: columnCount === 2 ? 0.1 + index * 0.08 : 0.1 + Math.abs(index - middle) * 0.1,
+    }));
+
+    // Set widths together before measuring heights, including wrapped captions.
+    visibleItems.forEach(item => {
+      item.style.position = 'absolute';
+      item.style.width = `${width}px`;
+    });
+    const itemHeights = visibleItems.map(item => item.offsetHeight);
+    visibleItems.forEach((item, index) => {
+      const columnIndex = heights.indexOf(Math.min(...heights));
+      item.style.left = `${columnIndex * (width + gap)}px`;
+      item.style.top = `${heights[columnIndex]}px`;
+      heights[columnIndex] += itemHeights[index] + gap;
+      columns[columnIndex].items.push(item);
+    });
+
+    container.style.height = `${Math.max(0, ...heights) - (visibleItems.length ? gap : 0)}px`;
+    container.classList.add('is-positioned');
+    maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    updateMotionPreference();
+  }
+
+  function scheduleLayout() {
+    if (!layoutFrame) layoutFrame = requestAnimationFrame(layoutMasonry);
+  }
+
+  buttons.forEach(button => {
+    button.setAttribute('aria-pressed', String(button.classList.contains('active')));
+    button.addEventListener('click', () => {
+      buttons.forEach(other => {
+        const active = other === button;
+        other.classList.toggle('active', active);
+        other.setAttribute('aria-pressed', String(active));
+      });
+      const filter = button.dataset.filter;
+      items.forEach(item => {
+        const category = item.querySelector('.project-card')?.dataset.category;
+        item.hidden = filter !== 'all' && category !== filter;
+        item.classList.toggle('d-none', item.hidden);
+      });
+      // Reset immediately so a category switch cannot inherit the old column lag.
+      resetMotion();
+      scheduleLayout();
     });
   });
-} else {
-  waitForImages(() => {
-    setTimeout(initMasonry, 100);
-  });
-}
 
-// 监听DOM变化，自动重新布局
-const container = document.querySelector('.masonry-container');
-if (container && 'MutationObserver' in window) {
-  const observer = new MutationObserver(() => {
-    setTimeout(() => {
-      waitForImages(() => {
-        initMasonry();
-      });
-    }, 100);
+  // Image errors must also trigger layout, without blocking all the other cards.
+  container.querySelectorAll('img').forEach(img => {
+    if (img.complete) return;
+    img.addEventListener('load', scheduleLayout, { once: true });
+    img.addEventListener('error', scheduleLayout, { once: true });
   });
+  if (document.fonts) document.fonts.ready.then(scheduleLayout);
 
-  observer.observe(container, {
-    childList: true,
-    subtree: true
+  // Observe actual size changes rather than our own inserted layout elements.
+  if ('ResizeObserver' in window) {
+    let previousWidth = 0;
+    const sizeObserver = new ResizeObserver(entries => {
+      if (entries.some(entry => entry.target !== container)) scheduleLayout();
+      const containerEntry = entries.find(entry => entry.target === container);
+      if (containerEntry && containerEntry.contentRect.width !== previousWidth) {
+        previousWidth = containerEntry.contentRect.width;
+        scheduleLayout();
+      }
+    });
+    sizeObserver.observe(container);
+    items.forEach(item => sizeObserver.observe(item.querySelector('.project-card')));
+  }
+
+  window.addEventListener('scroll', startMotion, { passive: true });
+  window.addEventListener('resize', scheduleLayout);
+  window.addEventListener('pageshow', scheduleLayout);
+  reducedMotion.addEventListener('change', updateMotionPreference);
+  desktopMotion.addEventListener('change', updateMotionPreference);
+  document.addEventListener('visibilitychange', resetMotion);
+  container.addEventListener('focusin', () => {
+    resetMotion();
+    requestAnimationFrame(resetMotion);
   });
-}
-
-// 窗口大小改变时重新布局
-let resizeTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(initMasonry, 250);
-});
+  layoutMasonry();
+})();
 
 /* Hamburger Menu */
 function initHamburgerMenu() {
