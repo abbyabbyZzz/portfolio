@@ -1,0 +1,60 @@
+/* Homepage text uses the same natural-size Effect 3 renderer as work details. */
+body {
+  animation: none;
+  opacity: 1;
+}
+
+/* Keep the page's static controls in the same entrance as its text and images. */
+html.homepage-entrance-pending :is(.folio-browse, .folio-stage-bottom, .site-nav .nav-toggle) {
+  visibility: hidden;
+}
+
+html.homepage-entrance-active :is(.folio-browse, .folio-stage-bottom) {
+  will-change: opacity;
+}
+
+/* The loop starts several viewports down the document. Only the root may lock
+   scrolling: a second overflow container would pull its sticky layout offscreen. */
+html.polaroid-ready.homepage-entrance-active body {
+  overflow: visible;
+}
+
+html.homepage-text-pending :is(
+  [data-intro-nav], .hero-text .label, .hero-title, .hero-body,
+  .info-cell .label, .info-cell .cell-content a,
+  .works-indicator > .label, .works-counter,
+  .slide-content > .label, .slide-content h2, .slide-desc,
+  .slide-meta p, .slide-link, #cursor-tooltip,
+  .folio-profile > .folio-label, .folio-profile h1, .folio-bio,
+  .folio-contact .folio-label, .folio-contact a,
+  .folio-work-heading > .folio-label, .folio-count,
+  .folio-project h2, .folio-description, .folio-project-link
+),
+[data-home-reveal="pending"] {
+  opacity: 0 !important;
+}
+
+.work-shuffle-mask {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+}
+
+.work-shuffle-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.work-shuffle-canvas {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-home-reveal] { opacity: 1 !important; }
+}

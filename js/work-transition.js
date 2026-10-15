@@ -1,5 +1,6 @@
 /**
- * Gallery → work detail. Keeps real document navigation and native link behavior.
+ * Gallery / homepage selected work → detail. Keeps real document navigation
+ * and native link behavior.
  * Repeating-image path inspired by Codrops RepeatingImageTransition:
  * https://github.com/codrops/RepeatingImageTransition
  *
@@ -28,9 +29,13 @@
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const galleryUrl = new URL('../gallery/', document.currentScript.src);
   const galleryPath = galleryUrl.pathname;
+  const homepageUrl = new URL('../', document.currentScript.src);
+  const homepagePath = homepageUrl.pathname;
   const currentPath = location.pathname + location.search;
   const onGallery = location.pathname === galleryPath ||
     location.pathname === galleryPath + 'index.html';
+  const onHomepage = location.pathname === homepagePath ||
+    location.pathname === homepagePath + 'index.html';
   let stage = null;
   let busy = false;
   let watchdog = null;
@@ -42,11 +47,17 @@
     try { sessionStorage.removeItem(KEY); } catch (error) { /* Optional storage. */ }
   }
 
+  function normalizePath(path) {
+    const [pathname, search = ''] = String(path).split('?');
+    const clean = pathname.replace(/\/index\.html$/i, '/').replace(/\/+$/, '') || '/';
+    return search ? `${clean}?${search}` : clean;
+  }
+
   function readState() {
     try {
       const state = JSON.parse(sessionStorage.getItem(KEY));
       const navigation = performance.getEntriesByType('navigation')[0];
-      if (!state || state.destination !== currentPath ||
+      if (!state || normalizePath(state.destination) !== normalizePath(currentPath) ||
         Date.now() - state.createdAt > 15000 ||
         navigation?.type === 'back_forward' || navigation?.type === 'reload' ||
         Math.abs(state.viewport - root.clientWidth) > 24 ||
@@ -148,22 +159,41 @@
     });
   }
 
-  function workLink(target) {
+  function workEntry(target) {
     const link = target instanceof Element ? target.closest('a[href]') : null;
-    if (!onGallery || !link?.querySelector('.project-thumb img') ||
-      !link.closest('.masonry-item') || link.hasAttribute('download') ||
+    if (!link || (!onGallery && !onHomepage) || link.hasAttribute('download') ||
       link.dataset.noTransition !== undefined ||
       (link.target && link.target.toLowerCase() !== '_self')) return null;
     const url = new URL(link.href, location.href);
     const relativePath = url.pathname.slice(galleryPath.length);
-    return url.origin === location.origin && url.pathname.startsWith(galleryPath) &&
-      /^[^/]+\/(?:index\.html)?$/.test(relativePath) && !url.hash ? link : null;
+    if (url.origin !== location.origin || !url.pathname.startsWith(galleryPath) ||
+      !/^[^/]+\/(?:index\.html)?$/.test(relativePath) || url.hash) return null;
+
+    if (onGallery) {
+      const image = link.querySelector('.project-thumb img');
+      const frame = image?.closest('.project-card');
+      return image && link.closest('.masonry-item') ? { link, image, frame } : null;
+    }
+
+    const directPhoto = link.closest('.polaroid[data-photo]');
+    let photo = directPhoto;
+    if (!photo && link.matches('.folio-project-link')) {
+      const index = link.closest('.folio-project')?.dataset.project;
+      if (index !== undefined) photo = document.querySelector(`.polaroid[data-photo="${index}"]`);
+    }
+    if (!photo) {
+      photo = [...document.querySelectorAll('.polaroid[data-photo][href]')]
+        .find((candidate) => new URL(candidate.href, location.href).href === url.href);
+    }
+    const image = photo?.querySelector('.polaroid-image img');
+    const frame = image?.closest('.polaroid-image');
+    return image ? { link, image, frame } : null;
   }
 
-  async function leave(link) {
-    const image = link.querySelector('.project-thumb img');
+  async function leave(entry) {
+    const { link, image, frame } = entry;
     const destination = new URL(link.href, location.href);
-    // All fallbacks navigate directly, including file previews and private storage.
+    // Same rhythm as the published site: cover quickly, then navigate.
     if (reducedMotion.matches || !Element.prototype.animate ||
       location.protocol === 'file:' || !image.complete || !image.naturalWidth) {
       location.assign(destination.href);
@@ -183,10 +213,11 @@
       return;
     }
 
+    prefetchUrl(destination.href);
     busy = true;
     const backdrop = createStage(0);
     const cover = createImage(state.src, state.rect);
-    cover.style.borderRadius = getComputedStyle(image.closest('.project-card')).borderRadius;
+    cover.style.borderRadius = frame ? getComputedStyle(frame).borderRadius : '0px';
     root.style.setProperty('--work-layout-width', state.viewport + 'px');
     root.classList.add('is-work-leaving');
     document.body.setAttribute('aria-busy', 'true');
@@ -214,14 +245,15 @@
   }
 
   async function arrive(state, cover, backdrop) {
-    document.body.setAttribute('aria-busy', 'true');
+    document.body?.setAttribute('aria-busy', 'true');
     try {
       const media = document.querySelector('.project-detail-page .hero img, ' +
         '.project-detail-page .hero iframe, .project-detail-page .hero video');
       if (!media || reducedMotion.matches) return;
+      // Keep the published arrive path, but don't freeze on long decode waits.
       await Promise.all([
-        settle(document.fonts?.ready, 120),
-        media instanceof HTMLImageElement ? settle(media.decode(), 700) : null,
+        settle(document.fonts?.ready, 40),
+        media instanceof HTMLImageElement ? settle(media.decode(), 80) : null,
       ]);
       if (!stage) return;
       // Measure the destination with its natural scrollbar before freezing its
@@ -303,30 +335,36 @@
     } else start();
   }
 
-  // Loaded before page-transition.js: only these Gallery card clicks are claimed.
+  // Loaded before page-transition.js: only Gallery and homepage work links are claimed.
   document.addEventListener('click', (event) => {
-    const link = workLink(event.target);
-    if (!link || event.defaultPrevented || event.button !== 0 ||
+    const entry = workEntry(event.target);
+    if (!entry || event.defaultPrevented || event.button !== 0 ||
       event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (!busy) leave(link).catch(() => {
-      clearState(); cleanup(); location.assign(link.href);
+    if (!busy) leave(entry).catch(() => {
+      clearState(); cleanup(); location.assign(entry.link.href);
     });
   }, true);
 
-  function prefetch(event) {
-    const link = workLink(event.target);
-    if (!link || prefetched.has(link.href) || location.protocol === 'file:' ||
+  function prefetchUrl(href) {
+    if (!href || prefetched.has(href) || location.protocol === 'file:' ||
       navigator.connection?.saveData) return;
-    prefetched.add(link.href);
+    prefetched.add(href);
     const hint = document.createElement('link');
     hint.rel = 'prefetch';
-    hint.href = link.href;
+    hint.as = 'document';
+    hint.href = href;
     document.head.appendChild(hint);
   }
-  if (onGallery) {
+
+  function prefetch(event) {
+    const entry = workEntry(event.target);
+    if (entry?.link) prefetchUrl(entry.link.href);
+  }
+  if (onGallery || onHomepage) {
     document.addEventListener('pointerover', prefetch, { passive: true });
+    document.addEventListener('pointerdown', prefetch, { passive: true });
     document.addEventListener('focusin', prefetch);
   }
   window.addEventListener('pageshow', (event) => {
