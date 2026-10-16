@@ -357,9 +357,9 @@ All animations and scroll behaviors are disabled when the user's system prefers 
 
 ### Custom Cursor
 
-- Custom SVG cursor (32×32px, black corner-bracket shape, `stroke-width: 3`).
-- Switches to white version when footer dark overlay is active (`body.footer-open`).
-- Applied to `body`, `a`, `button`.
+- Custom SVG cursor (32×32px corner-bracket shape, `stroke-width: 3`).
+- A fixed DOM cursor uses `mix-blend-mode: difference`, so the same shape automatically inverts over text, images, light backgrounds, and the dark footer.
+- Enabled only for fine hover pointers; touch and coarse-pointer devices keep their native behavior.
 
 ### Scroll Behavior
 

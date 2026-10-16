@@ -1,0 +1,43 @@
+/* Writings index uses the shared natural-size Effect 3 text renderer. */
+html.has-writings-text-entrance body.writings-page {
+  animation: none;
+  opacity: 1;
+}
+
+/* Effect 3 replaces the previous row slide-up while the coordinator is active. */
+html.has-writings-text-entrance .reveal-row {
+  opacity: 1;
+  transform: none;
+}
+
+html.writings-text-entrance-pending .writing-entrance-text,
+.writing-entrance-text[data-writings-reveal="pending"] {
+  opacity: 0 !important;
+}
+
+.work-shuffle-mask {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+}
+
+.work-shuffle-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.work-shuffle-canvas {
+  position: absolute;
+  display: block;
+  max-width: none;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .writing-entrance-text {
+    opacity: 1 !important;
+  }
+}

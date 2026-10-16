@@ -25,6 +25,7 @@
   'use strict';
 
   const KEY = 'abigail-work-transition';
+  const FILE_HASH_PREFIX = '#work-transition=';
   const root = document.documentElement;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const galleryUrl = new URL('../gallery/', document.currentScript.src);
@@ -53,9 +54,26 @@
     return search ? `${clean}?${search}` : clean;
   }
 
+  function readFileState() {
+    if (location.protocol !== 'file:' ||
+      !location.hash.startsWith(FILE_HASH_PREFIX)) return null;
+    try {
+      const state = JSON.parse(decodeURIComponent(
+        location.hash.slice(FILE_HASH_PREFIX.length)
+      ));
+      // Remove the transport payload before the animation becomes visible, so
+      // refreshing the detail page cannot replay an old transition.
+      history.replaceState(null, '', location.href.slice(0, location.href.indexOf('#')));
+      return state;
+    } catch (error) { return null; }
+  }
+
   function readState() {
     try {
-      const state = JSON.parse(sessionStorage.getItem(KEY));
+      // sessionStorage handles normal HTTP navigation. Local file navigation
+      // uses the URL fragment because storage is not shared reliably between
+      // different file:// documents.
+      const state = readFileState() || JSON.parse(sessionStorage.getItem(KEY));
       const navigation = performance.getEntriesByType('navigation')[0];
       if (!state || normalizePath(state.destination) !== normalizePath(currentPath) ||
         Date.now() - state.createdAt > 15000 ||
@@ -195,7 +213,7 @@
     const destination = new URL(link.href, location.href);
     // Same rhythm as the published site: cover quickly, then navigate.
     if (reducedMotion.matches || !Element.prototype.animate ||
-      location.protocol === 'file:' || !image.complete || !image.naturalWidth) {
+      !image.complete || !image.naturalWidth) {
       location.assign(destination.href);
       return;
     }
@@ -204,13 +222,18 @@
       src: image.currentSrc || image.src,
       rect: rectOf(image), viewport: root.clientWidth, createdAt: Date.now(),
     };
-    try {
-      sessionStorage.setItem(KEY, JSON.stringify(state));
-      // Some privacy modes silently discard writes.
-      if (!sessionStorage.getItem(KEY)) throw new Error('Storage unavailable');
-    } catch (error) {
-      location.assign(destination.href);
-      return;
+    if (location.protocol === 'file:') {
+      destination.hash = FILE_HASH_PREFIX.slice(1) +
+        encodeURIComponent(JSON.stringify(state));
+    } else {
+      try {
+        sessionStorage.setItem(KEY, JSON.stringify(state));
+        // Some privacy modes silently discard writes.
+        if (!sessionStorage.getItem(KEY)) throw new Error('Storage unavailable');
+      } catch (error) {
+        location.assign(destination.href);
+        return;
+      }
     }
 
     prefetchUrl(destination.href);
